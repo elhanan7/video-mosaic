@@ -5,6 +5,7 @@
 
 #include "image_to_mosaic.h"
 #include "directory_source.h"
+#include "video_to_mhi.h"
 
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/filesystem.hpp>
@@ -19,20 +20,13 @@ int main(int argc, char** argv)
 	Mat edges;
 
 	cv::Mat_<unsigned char> final;
-	//std::string inName = "C:\\Users\\elhanan7\\Programming\\CVM\\Data\\CANNON\\frame001.png";
-	//std::string inName = "C:\\Users\\elhanan7\\Programming\\CVM\\Data\\IMAGES\\bluedragon.jpg";
-	//std::string outName = "res.png";
-	//if (argc > 1)
-	//{
-	//	inName = argv[1];
-	//	outName = "vm_" + inName;
-	//}
 	DirectorySource ds(".", "frame(\\d+)\\.png",0,0);
 
 	boost::property_tree::ptree ini;
 	boost::property_tree::ini_parser::read_ini("C:\\Users\\elhanan7\\Programming\\CVM\\Data\\INI\\cvm.ini", ini);
 	ImageToMosaic itm(ini);
-
+	VideoToMHI vtm(ini);
+	bool first = true;
 	while (ds.HasNext())
 	{
 		frame = ds.Next();
@@ -45,11 +39,35 @@ int main(int argc, char** argv)
 		//cap >> frame;
 		//cv::cvtColor(frame, frame, CV_BGR2RGB);
 		
-		itm.Process(frame, fcolor);
-	
-		std::cout << "Before Writing Result" << std::endl;
+		//itm.Process(frame, fcolor);
+		cv::Mat gray;
+		cv::cvtColor(frame, gray, CV_BGR2GRAY);
+		vtm.Give(gray);
+		cv::Mat_<float> mhi = vtm.Take().clone();
+		std::vector<cv::Rect> segs;
+		vtm.TakeSegmentation(segs);
+		std::cout << segs.size() << std::endl;
+		cv::Mat_<unsigned char> motionMask = cv::Mat::zeros(frame.rows, frame.cols, CV_8U);
+		for (auto iter = segs.cbegin(); iter != segs.cend(); ++iter)
+		{
+			cv::Rect rect = *iter;
+			cv::Size axes(1.5*rect.width, 1.5*rect.height);
+			cv::ellipse(motionMask, cv::Point(rect.x + 0.5*rect.width, rect.y + 0.5*rect.height), axes,0 ,0, 360,cv::Scalar(1),-1);
+		}
+		if (!first)
+		{
+			itm.Process(frame, fcolor, motionMask);
+		}
+		else
+		{
+			itm.Process(frame, fcolor);
+			first = false;
+		}
+		cv::imwrite(topoName, mhi);
+		
+		//std::cout << "Before Writing Result" << std::endl;
 		cv::imwrite(outName, fcolor);
-		std::cout << "After Writing Result" << std::endl << std::endl;
+		//std::cout << "After Writing Result" << std::endl << std::endl;
 	}
 	
 	return 0;

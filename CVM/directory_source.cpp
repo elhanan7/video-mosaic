@@ -1,4 +1,5 @@
 #include <highgui.h>
+#undef BOOST_REGEX_NO_LIB
 #include <boost/regex.hpp>
 #include <boost/filesystem.hpp>
 

@@ -70,7 +70,8 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files (x86)\OpenSceneGraph\include;C:\Program Files (x86)\boost\boost_1_48;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\opencv\include;C:\Program Files\opencv\include\opencv;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -83,12 +84,16 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>C:\Program Files\opencv\include;C:\Program Files\opencv\include\opencv;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Program Files\opencv\lib;C:\Program Files (x86)\OpenSceneGraph\lib;C:\Program Files (x86)\boost\boost_1_48\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>opencv_highgui231d.lib;opencv_core231d.lib;opencv_video231d.lib;opencv_imgproc231d.lib;osgd.lib;osgGAd.lib;osgViewerd.lib;osgUtild.lib;osgDBd.lib;OpenThreadsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -96,7 +101,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files (x86)\OpenSceneGraph\include;C:\Program Files (x86)\boost\boost_1_48;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\opencv\include;C:\Program Files\opencv\include\opencv;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -113,6 +119,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>C:\Program Files\opencv\include;C:\Program Files\opencv\include\opencv;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -124,9 +131,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="images_to_mask.h" />
+    <ClInclude Include="video_to_mhi.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="images_to_mask.cpp" />
+    <ClCompile Include="video_to_mhi.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

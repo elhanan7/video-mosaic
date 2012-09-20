@@ -25,22 +25,25 @@ ImageToMosaic::ImageToMosaic(const bpt::ptree& ini) :
 	{
 		throw new std::logic_error("Unknown render type: " + tmp);
 	}
-	m_saveGL = ini.get("ImageToMosaic.SaveGL", true);
 	m_saveTopographic = ini.get("ImageToMosaic.SaveTopographic", true);
 }
 
 
-void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b>& output)
+void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b>& output, cv::Mat motionMask)
 {
 	Mat_<cv::Vec3b> frame, fcolor;
 	Mat edges;
-	//m_gl.SetCutoff(0.6);
 
 	cv::Mat_<unsigned char> final;
 	frame = input;
 	
 	cvtColor(frame, edges, CV_RGB2GRAY);
 	m_gl.Process(edges, edges);
+	if (!motionMask.empty())
+	{
+		m_lastGL.copyTo(edges, 1 - motionMask);
+	}
+	m_lastGL = edges.clone();
 	cv::Mat_<float> dx,dy;
 	m_tmm.Process(edges, edges, dx, dy);
 	TopographicToLocations::LocationList centers;

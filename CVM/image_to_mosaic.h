@@ -15,7 +15,7 @@ class ImageToMosaic
 {
 public:
 	ImageToMosaic(const boost::property_tree::ptree& ini);
-	void Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b>& output);
+	void Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b>& output, cv::Mat motionMask = cv::Mat());
 
 private:
 	enum RenderImpl
@@ -25,7 +25,7 @@ private:
 	};
 
 	RenderImpl m_renderImpl;
-	bool m_saveGL, m_saveTopographic, m_saveMHI, m_saveMotionSegments;
+	bool m_saveTopographic, m_saveMHI, m_saveMotionSegments;
 
 	GuideLines m_gl;
 	TopologicalMapMaker m_tmm;
@@ -34,5 +34,6 @@ private:
 	PolygonsToImage m_pti;
 	PolygonsToScene m_pts;
 	SceneToImage m_sti;
+	cv::Mat_<unsigned char> m_lastGL;
 };
 

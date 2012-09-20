@@ -45,14 +45,10 @@ void GuideLines::Process(const cv::Mat& in, cv::Mat& out)
 	cv::meanStdDev(inCopy, mean, stdev);
 	cv::threshold(cv::abs(inCopy - mean), inCopy, stdev[0]*m_glCutoff, 255, cv::THRESH_BINARY);
 	cv::Laplacian(inCopy, out, 0);
-	/*cv::namedWindow("Before");
-	cv::imshow("Before", out);*/
 	
 	if (m_useStd)
 	{
 		cv::multiply(stdMask, out, out);
-		/*cv::namedWindow("AfterSTD");
-		cv::imshow("AfterSTD", out);*/
 	}
 
 	if (m_morphologicalProcessing)
@@ -68,8 +64,6 @@ void GuideLines::Process(const cv::Mat& in, cv::Mat& out)
 			});
 		out.setTo(0);
 		cv::drawContours(out, bigContours, -1, 255);
-		/*cv::namedWindow("AfterMorph");
-		cv::imshow("AfterMorph", out);*/
 	}
 
 	cv::waitKey();

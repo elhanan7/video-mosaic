@@ -18,9 +18,15 @@
     <ClInclude Include="images_to_mask.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="video_to_mhi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="images_to_mask.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="video_to_mhi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
