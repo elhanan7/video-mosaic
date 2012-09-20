@@ -52,7 +52,8 @@ int main(int argc, char** argv)
 		{
 			cv::Rect rect = *iter;
 			cv::Size axes(1.5*rect.width, 1.5*rect.height);
-			cv::ellipse(motionMask, cv::Point(rect.x + 0.5*rect.width, rect.y + 0.5*rect.height), axes,0 ,0, 360,cv::Scalar(1),-1);
+			cv::Point center(rect.x + 0.5*rect.width, rect.y + 0.5*rect.height);
+			cv::ellipse(motionMask, center, axes,0 ,0, 360,cv::Scalar(1),-1);
 		}
 		if (!first)
 		{

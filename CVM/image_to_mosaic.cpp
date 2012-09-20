@@ -8,7 +8,7 @@ using namespace cv;
 
 
 ImageToMosaic::ImageToMosaic(const bpt::ptree& ini) :
-	m_gl(ini), m_tmm(ini), m_ttl(ini), m_ltp(ini), m_pti(ini), m_pts(ini), m_sti(ini)
+	m_gl(ini), m_tmm(ini), m_ttl(ini), m_ltp(ini), m_pti(ini), m_pts(ini), m_sti(ini), m_ocvRender(ini)
 {
 	std::string tmp;
 	tmp = ini.get("ImageToMosaic.RenderImpl", "POV_RAY");
@@ -20,6 +20,10 @@ ImageToMosaic::ImageToMosaic(const bpt::ptree& ini) :
 	else if (tmp == "osg")
 	{
 		m_renderImpl = RENDER_OSG;
+	}
+	else if (tmp == "opencv")
+	{
+		m_renderImpl = RENDER_OPENCV;
 	}
 	else
 	{
@@ -66,5 +70,10 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 		osg::Node* scene = m_pts.Process(frame, polys);
 		m_sti.Process(scene,cv::Size(frame.cols, frame.rows) ,fcolor);
 	}
+	else if (m_renderImpl == RENDER_OPENCV)
+	{
+		m_ocvRender.Process(frame, polys, fcolor);
+	}
+
 	output = fcolor;
 }
