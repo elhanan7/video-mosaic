@@ -10,6 +10,8 @@
 #include "polygons_to_image.h"
 #include "polygons_to_scene.h"
 #include "scene_to_image.h"
+#include "opencv_renderer.h"
+#include "superpixels_renderer.h"
 
 class ImageToMosaic
 {
@@ -21,7 +23,9 @@ private:
 	enum RenderImpl
 	{
 		RENDER_POV_RAY,
-		RENDER_OSG
+		RENDER_OSG,
+		RENDER_OPENCV,
+		RENDER_SUPERPIXEL
 	};
 
 	RenderImpl m_renderImpl;
@@ -34,6 +38,11 @@ private:
 	PolygonsToImage m_pti;
 	PolygonsToScene m_pts;
 	SceneToImage m_sti;
+	OpenCVRenderer m_ocvRender;
+	SuperpixelsRenderer m_spr;
 	cv::Mat_<unsigned char> m_lastGL;
+	TopographicToLocations::LocationList m_lastLocations;
+	bool m_maskTileLocationsWithMotion;
+	bool m_maskGuideLinesWithMotion;
 };
 

@@ -77,7 +77,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)$(PlatformName)\$(ConfigurationName);C:\Program Files\opencv\lib;C:\Program Files (x86)\OpenSceneGraph\lib;C:\Program Files (x86)\boost\boost_1_48\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Motion.lib;opencv_highgui231d.lib;opencv_core231d.lib;opencv_video231d.lib;opencv_imgproc231d.lib;osgd.lib;osgGAd.lib;osgViewerd.lib;osgUtild.lib;osgDBd.lib;OpenThreadsd.lib;opengl32.lib;libboost_regex-vc110-mt-gd-1_51.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_highgui231d.lib;opencv_core231d.lib;opencv_video231d.lib;opencv_imgproc231d.lib;osgd.lib;osgGAd.lib;osgViewerd.lib;osgUtild.lib;osgDBd.lib;OpenThreadsd.lib;opengl32.lib;libboost_regex-vc110-mt-gd-1_51.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -92,7 +92,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)$(PlatformName)\$(ConfigurationName);C:\Program Files\opencv\lib;C:\Program Files\OpenSceneGraph\lib;C:\Program Files\boost\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Motion.lib;opencv_highgui242d.lib;opencv_core242d.lib;opencv_video242d.lib;opencv_imgproc242d.lib;osgd.lib;osgGAd.lib;osgViewerd.lib;osgUtild.lib;osgDBd.lib;OpenThreadsd.lib;opengl32.lib;libboost_regex-vc110-mt-gd-1_51.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_highgui242d.lib;opencv_core242d.lib;opencv_video242d.lib;opencv_imgproc242d.lib;osgd.lib;osgGAd.lib;osgViewerd.lib;osgUtild.lib;osgDBd.lib;OpenThreadsd.lib;opengl32.lib;libboost_regex-vc110-mt-gd-1_51.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -111,7 +111,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)$(PlatformName)\$(ConfigurationName);C:\Program Files\opencv\lib;C:\Program Files (x86)\OpenSceneGraph\lib;C:\Program Files (x86)\boost\boost_1_48\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Motion.lib;opencv_highgui231.lib;opencv_core231.lib;opencv_video231.lib;opencv_imgproc231.lib;osg.lib;osgGA.lib;osgViewer.lib;osgUtil.lib;osgDB.lib;OpenThreads.lib;opengl32.lib;libboost_regex-vc110-mt-1_51.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_highgui231.lib;opencv_core231.lib;opencv_video231.lib;opencv_imgproc231.lib;osg.lib;osgGA.lib;osgViewer.lib;osgUtil.lib;osgDB.lib;OpenThreads.lib;opengl32.lib;libboost_regex-vc110-mt-1_51.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -130,7 +130,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)$(PlatformName)\$(ConfigurationName);C:\Program Files\opencv\lib;C:\Program Files\OpenSceneGraph\lib;C:\Program Files\boost\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Motion.lib;opencv_highgui242.lib;opencv_core242.lib;opencv_video242.lib;opencv_imgproc242.lib;osg.lib;osgGA.lib;osgViewer.lib;osgUtil.lib;osgDB.lib;OpenThreads.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_highgui242.lib;opencv_core242.lib;opencv_video242.lib;opencv_imgproc242.lib;osg.lib;osgGA.lib;osgViewer.lib;osgUtil.lib;osgDB.lib;OpenThreads.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
     <ProjectReference />
@@ -144,9 +144,11 @@
     <ClCompile Include="locations_to_scene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="offscreen_render.cpp" />
+    <ClCompile Include="opencv_renderer.cpp" />
     <ClCompile Include="polygons_to_image.cpp" />
     <ClCompile Include="polygons_to_scene.cpp" />
     <ClCompile Include="scene_to_image.cpp" />
+    <ClCompile Include="superpixels_renderer.cpp" />
     <ClCompile Include="topographic_to_locations.cpp" />
     <ClCompile Include="topological_map_maker.cpp" />
     <ClCompile Include="video_to_mosaic.cpp" />
@@ -160,14 +162,21 @@
     <ClInclude Include="locations_to_polygons.h" />
     <ClInclude Include="locations_to_scene.h" />
     <ClInclude Include="locator_grid.h" />
+    <ClInclude Include="opencv_renderer.h" />
     <ClInclude Include="polygons_to_image.h" />
     <ClInclude Include="polygons_to_scene.h" />
     <ClInclude Include="scene_to_image.h" />
+    <ClInclude Include="superpixels_renderer.h" />
     <ClInclude Include="topographic_to_locations.h" />
     <ClInclude Include="topological_map_maker.h" />
     <ClInclude Include="transfromations.h" />
     <ClInclude Include="video_source.h" />
     <ClInclude Include="video_to_mosaic.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Motion\Motion.vcxproj">
+      <Project>{ee9026d4-8662-4fb1-bd8e-04d84c91df07}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

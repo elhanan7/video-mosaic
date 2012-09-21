@@ -63,6 +63,12 @@
     <ClCompile Include="video_to_mosaic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="opencv_renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="superpixels_renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="guide_lines.h">
@@ -111,6 +117,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="video_to_mosaic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="opencv_renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="superpixels_renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
