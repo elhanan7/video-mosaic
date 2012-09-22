@@ -617,8 +617,9 @@ void osr(osg::Node* scene, osgViewer::Viewer* viewer, unsigned int width, unsign
     while (arguments.read("--triple-pbo")) mode = WindowCaptureCallback::TRIPLE_PBO;
 	*/
 
+	static bool initialized = false;
     static osg::ref_ptr<osg::GraphicsContext> pbuffer;
-	if (!pbuffer.valid())
+	if (!initialized)
     {
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
         traits->x = 0;
@@ -643,7 +644,7 @@ void osr(osg::Node* scene, osgViewer::Viewer* viewer, unsigned int width, unsign
         {
             osg::notify(osg::NOTICE)<<"Pixel buffer has not been created successfully."<<std::endl;
         }
-
+		initialized = true;
     }
         
     viewer->setSceneData( scene );
@@ -666,5 +667,4 @@ void osr(osg::Node* scene, osgViewer::Viewer* viewer, unsigned int width, unsign
 			viewer->frame();
        
     }
-	pbuffer.release();
 }

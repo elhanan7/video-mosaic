@@ -25,7 +25,7 @@ private:
 		RENDER_POV_RAY,
 		RENDER_OSG,
 		RENDER_OPENCV,
-		RENDER_SUPERPIXEL
+		RENDER_SUPERPIXELS
 	};
 
 	RenderImpl m_renderImpl;

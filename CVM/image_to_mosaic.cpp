@@ -32,7 +32,7 @@ namespace
 }
 
 ImageToMosaic::ImageToMosaic(const bpt::ptree& ini) :
-	m_gl(ini), m_tmm(ini), m_ttl(ini), m_ltp(ini), m_pti(ini), m_pts(ini), m_sti(ini), m_ocvRender(ini)
+	m_gl(ini), m_tmm(ini), m_ttl(ini), m_ltp(ini), m_pti(ini), m_pts(ini), m_sti(ini), m_ocvRender(ini), m_spr(ini)
 {
 	std::string tmp;
 	tmp = ini.get("ImageToMosaic.RenderImpl", "POV_RAY");
@@ -49,9 +49,9 @@ ImageToMosaic::ImageToMosaic(const bpt::ptree& ini) :
 	{
 		m_renderImpl = RENDER_OPENCV;
 	}
-	else if (tmp == "superpixel")
+	else if (tmp == "superpixels")
 	{
-		m_renderImpl = RENDER_SUPERPIXEL;
+		m_renderImpl = RENDER_SUPERPIXELS;
 	}
 	else
 	{
@@ -97,7 +97,7 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 	{
 		return atan2(dy(pt), dx(pt));
 	});
-	if (m_renderImpl == RENDER_SUPERPIXEL)
+	if (m_renderImpl == RENDER_SUPERPIXELS)
 	{
 		m_spr.Process(centers, frame, fcolor);
 		output = fcolor;

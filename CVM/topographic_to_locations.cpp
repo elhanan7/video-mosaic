@@ -34,9 +34,10 @@ void TopographicToLocations::Process(const cv::Mat_<unsigned char>& topo, Locati
 		for (size_t j = 0; j < contours[i].size(); ++j)
 		{
 			cv::Point thisPt = contours[i][j];
-			cv::Point half(m_tsize / 2 , m_tsize / 2 );
+			cv::Point half(m_tsize - 1, m_tsize - 1);
+			cv::Point ones(1,1);
 			cv::Point tl, br;
-			tl = thisPt - half;
+			tl = thisPt - half + ones;
 			br = thisPt + half;
 			tl = clamp(tl, topoCopy.cols - 1, topoCopy.rows - 1);
 			br = clamp(br, topoCopy.cols - 1, topoCopy.rows - 1);
