@@ -6,6 +6,7 @@
 OpenCVRenderer::OpenCVRenderer(const boost::property_tree::ptree& ini)
 {
 	m_sizeMultiplier = ini.get("OpenCVRenderer.SizeMultiplier", 3);
+	m_drawOutline = ini.get("OpenCVRenderer.DrawOutline", true);
 }
 
 void OpenCVRenderer::Process(const cv::Mat_<cv::Vec3b>& colorImage, const PolygonList& polygons, cv::Mat& output)
@@ -14,8 +15,8 @@ void OpenCVRenderer::Process(const cv::Mat_<cv::Vec3b>& colorImage, const Polygo
 	result.setTo(cv::Vec3b(100,100,100));
 	auto fixCoord = [&](cv::Point2d ptd) -> cv::Point2i
 	{
-		int clampedX = m_sizeMultiplier*std::min(std::max((int)ptd.x, 0), colorImage.cols);
-		int clampedY = m_sizeMultiplier*std::min(std::max((int)ptd.y, 0), colorImage.rows);
+		int clampedX = m_sizeMultiplier*std::min(std::max((int)ptd.x, 0), colorImage.cols - 1);
+		int clampedY = m_sizeMultiplier*std::min(std::max((int)ptd.y, 0), colorImage.rows - 1);
 		return cv::Point2i(clampedX, clampedY);
 	};
 
@@ -26,7 +27,10 @@ void OpenCVRenderer::Process(const cv::Mat_<cv::Vec3b>& colorImage, const Polygo
 		cv::Vec3b color = colorImage(cv::Point2i(fixedVec[0].x/m_sizeMultiplier, fixedVec[0].y/m_sizeMultiplier));
 
 		cv::fillConvexPoly(result, fixedVec, cv::Scalar(color));
-		cv::polylines(result, fixedVec, true, cv::Scalar(cv::Vec3b(100,100,100)));
+		if (m_drawOutline)
+		{
+			cv::polylines(result, fixedVec, true, cv::Scalar(cv::Vec3b(100,100,100)));
+		}
 	}
 
 	output = result;

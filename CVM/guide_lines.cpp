@@ -13,7 +13,7 @@ namespace bpt = boost::property_tree;
 
 GuideLines::GuideLines(const bpt::ptree& ini)
 {
-	m_glCutoff = ini.get("GuideLines.Cutoff", 0.6);
+	m_guideLinesCutoff = ini.get("GuideLines.Cutoff", 0.6);
 	m_morphologicalProcessing = ini.get("GuideLines.MorphologicalProcessing", true);
 	m_contourSizeLimit = ini.get("GuideLines.ContourSizeLimit", 30);
 	m_useStd = ini.get("GuideLines.UseSTD", true);
@@ -43,7 +43,7 @@ void GuideLines::Process(const cv::Mat& in, cv::Mat& out)
 	cv::equalizeHist(in, inCopy);
 	cv::Scalar mean, stdev;
 	cv::meanStdDev(inCopy, mean, stdev);
-	cv::threshold(cv::abs(inCopy - mean), inCopy, stdev[0]*m_glCutoff, 255, cv::THRESH_BINARY);
+	cv::threshold(cv::abs(inCopy - mean), inCopy, stdev[0]*m_guideLinesCutoff, 255, cv::THRESH_BINARY);
 	cv::Laplacian(inCopy, out, 0);
 	
 	if (m_useStd)

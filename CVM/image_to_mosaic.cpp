@@ -9,30 +9,39 @@ using namespace cv;
 namespace
 {
 	void JoinLocationsWithMask(const TopographicToLocations::LocationList& oldLocs,
+							const std::vector<float> oldOrientations,
 							const TopographicToLocations::LocationList& newLocs,
+							const std::vector<float> newOrientations,
 							const cv::Mat_<unsigned char> mask,
-							TopographicToLocations::LocationList& result)
+							TopographicToLocations::LocationList& result,
+							std::vector<float>& resultOrientation)
 	{
+		size_t idx = 0;
 		for (auto iter = oldLocs.cbegin(); iter != oldLocs.cend(); ++iter)
 		{
 			if (!mask(*iter))
 			{
 				result.push_back(*iter);
+				resultOrientation.push_back(oldOrientations[idx]);
 			}
+			++idx;
 		}
 
+		idx = 0;
 		for (auto iter = newLocs.cbegin(); iter != newLocs.cend(); ++iter)
 		{
 			if (mask(*iter))
 			{
 				result.push_back(*iter);
+				resultOrientation.push_back(newOrientations[idx]);
 			}
+			++idx;
 		}
 	}
 }
 
 ImageToMosaic::ImageToMosaic(const bpt::ptree& ini) :
-	m_gl(ini), m_tmm(ini), m_ttl(ini), m_ltp(ini), m_pti(ini), m_pts(ini), m_sti(ini), m_ocvRender(ini), m_spr(ini)
+	m_guideLines(ini), m_topologicalMapMaker(ini), m_topologicalToLocations(ini), m_locationsToPolygons(ini), m_povRayRenderer(ini), m_polygonsToScene(ini), m_sceneToImage(ini), m_opencvRenderer(ini), m_voronoiRenderer(ini)
 {
 	std::string tmp;
 	tmp = ini.get("ImageToMosaic.RenderImpl", "POV_RAY");
@@ -49,9 +58,9 @@ ImageToMosaic::ImageToMosaic(const bpt::ptree& ini) :
 	{
 		m_renderImpl = RENDER_OPENCV;
 	}
-	else if (tmp == "superpixels")
+	else if (tmp == "voronoi")
 	{
-		m_renderImpl = RENDER_SUPERPIXELS;
+		m_renderImpl = RENDER_VORONOI;
 	}
 	else
 	{
@@ -72,52 +81,54 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 	frame = input;
 	
 	cvtColor(frame, edges, CV_RGB2GRAY);
-	m_gl.Process(edges, edges);
+	m_guideLines.Process(edges, edges);
 	if (m_maskGuideLinesWithMotion && !motionMask.empty())
 	{
 		m_lastGL.copyTo(edges, 1 - motionMask);
 	}
 	m_lastGL = edges.clone();
 	cv::Mat_<float> dx,dy;
-	m_tmm.Process(edges, edges, dx, dy);
+	m_topologicalMapMaker.Process(edges, edges, dx, dy);
 	TopographicToLocations::LocationList currentCenters, centers;
-	m_ttl.Process(edges, currentCenters);
-	if (m_maskTileLocationsWithMotion &&  !motionMask.empty())
-	{
-		JoinLocationsWithMask(m_lastLocations, currentCenters, motionMask, centers);
-	}
-	else
-	{
-		centers = currentCenters;
-	}
-	m_lastLocations = centers;
-	std::vector<float> orientations(centers.size());
-	std::transform(centers.begin(), centers.end(), orientations.begin(),
+	m_topologicalToLocations.Process(edges, currentCenters);
+	std::vector<float> currentOrientations(currentCenters.size()), orientations;
+	std::transform(currentCenters.begin(), currentCenters.end(), currentOrientations.begin(),
 		[&,dx,dy](const cv::Point& pt) -> float
 	{
 		return atan2(dy(pt), dx(pt));
 	});
-	if (m_renderImpl == RENDER_SUPERPIXELS)
+	if (m_maskTileLocationsWithMotion &&  !motionMask.empty())
 	{
-		m_spr.Process(centers, frame, fcolor);
+		JoinLocationsWithMask(m_lastLocations, m_lastOrientations, currentCenters, currentOrientations, motionMask, centers, orientations);
+	}
+	else
+	{
+		centers = currentCenters;
+		orientations = currentOrientations;
+	}
+	m_lastLocations = centers;
+	m_lastOrientations = orientations;
+	if (m_renderImpl == RENDER_VORONOI)
+	{
+		m_voronoiRenderer.Process(centers, frame, fcolor);
 		output = fcolor;
 		return;
 	}
 	LocationsToPolygons::PolygonList polys;
 
-	m_ltp.Process(centers, orientations, cv::Size(frame.cols, frame.rows), polys);
+	m_locationsToPolygons.Process(centers, orientations, cv::Size(frame.cols, frame.rows), polys);
 	if (m_renderImpl == RENDER_POV_RAY)
 	{
-		m_pti.Process(frame, polys, fcolor);
+		m_povRayRenderer.Process(frame, polys, fcolor);
 	}
 	else if (m_renderImpl == RENDER_OSG)
 	{
-		osg::Node* scene = m_pts.Process(frame, polys);
-		m_sti.Process(scene,cv::Size(frame.cols, frame.rows) ,fcolor);
+		osg::Node* scene = m_polygonsToScene.Process(frame, polys);
+		m_sceneToImage.Process(scene,cv::Size(frame.cols, frame.rows) ,fcolor);
 	}
 	else if (m_renderImpl == RENDER_OPENCV)
 	{
-		m_ocvRender.Process(frame, polys, fcolor);
+		m_opencvRenderer.Process(frame, polys, fcolor);
 	}
 
 	output = fcolor;

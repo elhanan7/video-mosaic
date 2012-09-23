@@ -19,111 +19,129 @@
     <Filter Include="Source Files\video_source">
       <UniqueIdentifier>{822dc8d1-9794-4f6d-840b-c9b7c1b57ac9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\renderers">
+      <UniqueIdentifier>{a82c5e92-4c9f-473d-a179-1e8727c0bd26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\renderers">
+      <UniqueIdentifier>{1ec07bc8-0579-4dc1-ada7-cfe1399ec033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utils">
+      <UniqueIdentifier>{bf1536bf-b5b9-443f-8b73-20f3028c1cb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\clipper">
+      <UniqueIdentifier>{d25422ad-ffb5-4638-a2a6-957d9d364958}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\clipper">
+      <UniqueIdentifier>{4ee5a400-7c75-4da9-b357-3bbd56a1f204}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\algorithm">
+      <UniqueIdentifier>{25bbd5e5-2597-4b14-9f8f-289ca21e0f8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\algorithm">
+      <UniqueIdentifier>{2de4006f-956b-47cf-a771-f2cd44d154a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="guide_lines.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="topological_map_maker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="locations_to_scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="locations_to_polygons.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="clipper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="polygons_to_scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="polygons_to_image.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="scene_to_image.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="offscreen_render.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="directory_source.cpp">
       <Filter>Source Files\video_source</Filter>
     </ClCompile>
-    <ClCompile Include="image_to_mosaic.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="locations_to_scene.cpp">
+      <Filter>Source Files\renderers</Filter>
     </ClCompile>
-    <ClCompile Include="topographic_to_locations.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="offscreen_render.cpp">
+      <Filter>Source Files\renderers</Filter>
     </ClCompile>
-    <ClCompile Include="video_to_mosaic.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="polygons_to_scene.cpp">
+      <Filter>Source Files\renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="scene_to_image.cpp">
+      <Filter>Source Files\renderers</Filter>
     </ClCompile>
     <ClCompile Include="opencv_renderer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\renderers</Filter>
     </ClCompile>
-    <ClCompile Include="superpixels_renderer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="clipper.cpp">
+      <Filter>Source Files\clipper</Filter>
+    </ClCompile>
+    <ClCompile Include="guide_lines.cpp">
+      <Filter>Source Files\algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="image_to_mosaic.cpp">
+      <Filter>Source Files\algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="locations_to_polygons.cpp">
+      <Filter>Source Files\algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="topographic_to_locations.cpp">
+      <Filter>Source Files\algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="topological_map_maker.cpp">
+      <Filter>Source Files\algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="video_to_mosaic.cpp">
+      <Filter>Source Files\algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="voronoi_renderer.cpp">
+      <Filter>Source Files\renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="pov_ray_renderer.cpp">
+      <Filter>Source Files\renderers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="guide_lines.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="topological_map_maker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="topographic_to_locations.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="locations_to_scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="adapt_cv_point.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="transfromations.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="locator_grid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="locations_to_polygons.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="clipper.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="polygons_to_scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="polygons_to_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="scene_to_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="video_source.h">
       <Filter>Header Files\video_source</Filter>
     </ClInclude>
     <ClInclude Include="directory_source.h">
       <Filter>Header Files\video_source</Filter>
     </ClInclude>
-    <ClInclude Include="image_to_mosaic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="video_to_mosaic.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="polygons_to_scene.h">
+      <Filter>Header Files\renderers</Filter>
     </ClInclude>
     <ClInclude Include="opencv_renderer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\renderers</Filter>
     </ClInclude>
-    <ClInclude Include="superpixels_renderer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="scene_to_image.h">
+      <Filter>Header Files\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="locations_to_scene.h">
+      <Filter>Header Files\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="transfromations.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="locator_grid.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="adapt_cv_point.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="clipper.hpp">
+      <Filter>Header Files\clipper</Filter>
+    </ClInclude>
+    <ClInclude Include="guide_lines.h">
+      <Filter>Header Files\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="image_to_mosaic.h">
+      <Filter>Header Files\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="locations_to_polygons.h">
+      <Filter>Header Files\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="topographic_to_locations.h">
+      <Filter>Header Files\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="topological_map_maker.h">
+      <Filter>Header Files\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="video_to_mosaic.h">
+      <Filter>Header Files\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="voronoi_renderer.h">
+      <Filter>Header Files\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="pov_ray_renderer.h">
+      <Filter>Header Files\renderers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

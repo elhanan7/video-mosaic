@@ -65,7 +65,6 @@ void LocationsToPolygons::Process(const std::vector<cv::Point>& locations, const
 		
 		clipper.Execute(ClipperLib::ctDifference, result);
 		clipperResult.insert(clipperResult.end(), result.begin(), result.end());
-		//std::cout << i << std::endl;
 	}
 	polygons.resize(clipperResult.size());
 	for (size_t i = 0; i < clipperResult.size(); ++i)

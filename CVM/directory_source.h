@@ -6,7 +6,7 @@ class DirectorySource :
 	public VideoSource
 {
 public:
-	DirectorySource(std::string path, std::string pattern, int startIndex, int stopIndex);
+	DirectorySource(std::string path, std::string pattern, int startIndex, int stopIndex, bool reverse = false);
 
 	virtual cv::Mat Next();
 	virtual bool HasNext() const;
@@ -21,8 +21,10 @@ private:
 	
 	PathVector m_paths;
 	PathVector::const_iterator m_current;
+	PathVector::const_reverse_iterator m_currentr;
 	int m_type;
 	int m_rows, m_cols;
+	bool m_reverse;
 
 };
 

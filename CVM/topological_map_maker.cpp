@@ -13,7 +13,7 @@ void TopologicalMapMaker::Process(const cv::Mat& in, cv::Mat& dist, cv::Mat& dx,
 {
 	cv::Mat floatImg(in.rows, in.cols, CV_32FC1);
 	cv::bitwise_not(in, dist);
-	cv::distanceTransform(dist, floatImg, CV_DIST_L2, 5);
+	cv::distanceTransform(dist, floatImg, CV_DIST_L2, CV_DIST_MASK_PRECISE);
 	dist.create(in.rows, in.cols, CV_8UC1);
 	for (int i = 0; i < dist.rows; ++i)
 	{

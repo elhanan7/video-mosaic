@@ -19,35 +19,36 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{9B601699-B2AB-4A11-A79B-FF4996D37578}</ProjectGuid>
-    <RootNamespace>CVM</RootNamespace>
+    <ProjectGuid>{D7D07C0F-116B-495B-A164-89EE9409BF4A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Main</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -65,114 +66,105 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files\opencv\include;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;..\Motion;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;BOOST_REGEX_NO_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files\opencv\include;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;..\Motion;..\CVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(PlatformName)\$(ConfigurationName);C:\Program Files\opencv\lib;C:\Program Files (x86)\OpenSceneGraph\lib;C:\Program Files (x86)\boost\boost_1_48\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_highgui231d.lib;opencv_core231d.lib;opencv_video231d.lib;opencv_imgproc231d.lib;osgd.lib;osgGAd.lib;osgViewerd.lib;osgUtild.lib;osgDBd.lib;OpenThreadsd.lib;opengl32.lib;libboost_regex-vc110-mt-gd-1_51.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(PlatformName)\$(ConfigurationName);C:\Program Files\opencv\lib;C:\Program Files\OpenSceneGraph\lib;C:\Program Files\boost\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_highgui242d.lib;opencv_core242d.lib;opencv_video242d.lib;opencv_imgproc242d.lib;osgd.lib;osgGAd.lib;osgViewerd.lib;osgUtild.lib;osgDBd.lib;OpenThreadsd.lib;opengl32.lib;libboost_regex-vc110-mt-gd-1_51.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files\opencv\include;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;..\Motion;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;BOOST_REGEX_NO_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files\opencv\include;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;..\Motion;..\CVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)$(PlatformName)\$(ConfigurationName);C:\Program Files\opencv\lib;C:\Program Files\OpenSceneGraph\lib;C:\Program Files\boost\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>opencv_highgui242d.lib;opencv_core242d.lib;opencv_video242d.lib;opencv_imgproc242d.lib;osgd.lib;osgGAd.lib;osgViewerd.lib;osgUtild.lib;osgDBd.lib;OpenThreadsd.lib;opengl32.lib;libboost_regex-vc110-mt-gd-1_51.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files\opencv\include;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;..\Motion;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;BOOST_REGEX_NO_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files\opencv\include;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;..\Motion;..\CVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(PlatformName)\$(ConfigurationName);C:\Program Files\opencv\lib;C:\Program Files (x86)\OpenSceneGraph\lib;C:\Program Files (x86)\boost\boost_1_48\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_highgui231.lib;opencv_core231.lib;opencv_video231.lib;opencv_imgproc231.lib;osg.lib;osgGA.lib;osgViewer.lib;osgUtil.lib;osgDB.lib;OpenThreads.lib;opengl32.lib;libboost_regex-vc110-mt-1_51.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(PlatformName)\$(ConfigurationName);C:\Program Files\opencv\lib;C:\Program Files\OpenSceneGraph\lib;C:\Program Files\boost\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files\opencv\include;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;..\Motion;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;BOOST_REGEX_NO_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files\opencv\include;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;..\Motion;..\CVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)$(PlatformName)\$(ConfigurationName);C:\Program Files\opencv\lib;C:\Program Files\OpenSceneGraph\lib;C:\Program Files\boost\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>opencv_highgui242.lib;opencv_core242.lib;opencv_video242.lib;opencv_imgproc242.lib;osg.lib;osgGA.lib;osgViewer.lib;osgUtil.lib;osgDB.lib;OpenThreads.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Console</SubSystem>
     </Link>
-    <ProjectReference />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="clipper.cpp" />
-    <ClCompile Include="directory_source.cpp" />
-    <ClCompile Include="guide_lines.cpp" />
-    <ClCompile Include="image_to_mosaic.cpp" />
-    <ClCompile Include="locations_to_polygons.cpp" />
-    <ClCompile Include="locations_to_scene.cpp" />
-    <ClCompile Include="offscreen_render.cpp" />
-    <ClCompile Include="opencv_renderer.cpp" />
-    <ClCompile Include="polygons_to_scene.cpp" />
-    <ClCompile Include="pov_ray_renderer.cpp" />
-    <ClCompile Include="scene_to_image.cpp" />
-    <ClCompile Include="topographic_to_locations.cpp" />
-    <ClCompile Include="topological_map_maker.cpp" />
-    <ClCompile Include="video_to_mosaic.cpp" />
-    <ClCompile Include="voronoi_renderer.cpp" />
+    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="adapt_cv_point.h" />
-    <ClInclude Include="clipper.hpp" />
-    <ClInclude Include="directory_source.h" />
-    <ClInclude Include="guide_lines.h" />
-    <ClInclude Include="image_to_mosaic.h" />
-    <ClInclude Include="locations_to_polygons.h" />
-    <ClInclude Include="locations_to_scene.h" />
-    <ClInclude Include="locator_grid.h" />
-    <ClInclude Include="opencv_renderer.h" />
-    <ClInclude Include="polygons_to_scene.h" />
-    <ClInclude Include="pov_ray_renderer.h" />
-    <ClInclude Include="scene_to_image.h" />
-    <ClInclude Include="topographic_to_locations.h" />
-    <ClInclude Include="topological_map_maker.h" />
-    <ClInclude Include="transfromations.h" />
-    <ClInclude Include="video_source.h" />
-    <ClInclude Include="video_to_mosaic.h" />
-    <ClInclude Include="voronoi_renderer.h" />
+    <ClCompile Include="process_directory.cpp" />
+    <ClCompile Include="process_file.cpp" />
+    <ClCompile Include="test_main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CVM\CVM.vcxproj">
+      <Project>{9b601699-b2ab-4a11-a79b-ff4996d37578}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Motion\Motion.vcxproj">
       <Project>{ee9026d4-8662-4fb1-bd8e-04d84c91df07}</Project>
     </ProjectReference>

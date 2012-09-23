@@ -16,5 +16,6 @@ public:
 
 private:
 	int m_sizeMultiplier;
+	bool m_drawOutline;
 };
 
