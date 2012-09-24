@@ -19,32 +19,32 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D7D07C0F-116B-495B-A164-89EE9409BF4A}</ProjectGuid>
+    <ProjectGuid>{DAC5AC47-1C64-4BA2-B55E-81F67752175B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Main</RootNamespace>
+    <RootNamespace>python_video_mosaic</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v110</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v110</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -68,15 +68,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>video_mosaic</TargetName>
+    <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>video_mosaic</TargetName>
+    <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>video_mosaic</TargetName>
+    <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>video_mosaic</TargetName>
+    <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -84,15 +92,15 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files\opencv\include;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;..\Motion;..\CVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PYTHON_VIDEO_MOSAIC_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files\opencv\include;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;..\Motion;..\CVM;c:\Python27_x64\include;C:\Python27_x64\Lib\site-packages\numpy\core\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4244;4819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(PlatformName)\$(ConfigurationName);C:\Program Files\opencv\lib;C:\Program Files\OpenSceneGraph\lib;C:\Program Files\boost\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_highgui242d.lib;opencv_core242d.lib;opencv_video242d.lib;opencv_imgproc242d.lib;osgd.lib;osgGAd.lib;osgViewerd.lib;osgUtild.lib;osgDBd.lib;OpenThreadsd.lib;opengl32.lib;libboost_regex-vc110-mt-gd-1_51.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>c:\Python27_x64\libs;C:\Program Files\opencv\lib;C:\Program Files\OpenSceneGraph\lib;C:\Program Files\boost\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>python27.lib;opencv_highgui242d.lib;opencv_core242d.lib;opencv_video242d.lib;opencv_imgproc242d.lib;osgd.lib;osgGAd.lib;osgViewerd.lib;osgUtild.lib;osgDBd.lib;OpenThreadsd.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -101,15 +109,15 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files\opencv\include;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;..\Motion;..\CVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PYTHON_VIDEO_MOSAIC_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files\opencv\include;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;..\Motion;..\CVM;c:\Python27_x64\include;C:\Python27_x64\Lib\site-packages\numpy\core\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4244;4819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(PlatformName)\$(ConfigurationName);C:\Program Files\opencv\lib;C:\Program Files\OpenSceneGraph\lib;C:\Program Files\boost\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_highgui242d.lib;opencv_core242d.lib;opencv_video242d.lib;opencv_imgproc242d.lib;osgd.lib;osgGAd.lib;osgViewerd.lib;osgUtild.lib;osgDBd.lib;OpenThreadsd.lib;opengl32.lib;libboost_regex-vc110-mt-gd-1_51.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>c:\Python27_x64\libs;C:\Program Files\opencv\lib;C:\Program Files\OpenSceneGraph\lib;C:\Program Files\boost\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>python27.lib;opencv_highgui242d.lib;opencv_core242d.lib;opencv_video242d.lib;opencv_imgproc242d.lib;osgd.lib;osgGAd.lib;osgViewerd.lib;osgUtild.lib;osgDBd.lib;OpenThreadsd.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -120,16 +128,17 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files\opencv\include;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;..\Motion;..\CVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PYTHON_VIDEO_MOSAIC_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files\opencv\include;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;..\Motion;..\CVM;c:\Python27_x64\include;C:\Python27_x64\Lib\site-packages\numpy\core\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4244;4819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(PlatformName)\$(ConfigurationName);C:\Program Files\opencv\lib;C:\Program Files\OpenSceneGraph\lib;C:\Program Files\boost\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>c:\Python27_x64\libs;C:\Program Files\opencv\lib;C:\Program Files\OpenSceneGraph\lib;C:\Program Files\boost\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>python27.lib;opencv_highgui242.lib;opencv_core242.lib;opencv_video242.lib;opencv_imgproc242.lib;osg.lib;osgGA.lib;osgViewer.lib;osgUtil.lib;osgDB.lib;OpenThreads.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -140,33 +149,30 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files\opencv\include;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;..\Motion;..\CVM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PYTHON_VIDEO_MOSAIC_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files\opencv\include\opencv;C:\Program Files\opencv\include;C:\Program Files\OpenSceneGraph\include;C:\Program Files\boost;..\Motion;..\CVM;c:\Python27_x64\include;C:\Python27_x64\Lib\site-packages\numpy\core\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4244;4819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(PlatformName)\$(ConfigurationName);C:\Program Files\opencv\lib;C:\Program Files\OpenSceneGraph\lib;C:\Program Files\boost\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_highgui242.lib;opencv_core242.lib;opencv_video242.lib;opencv_imgproc242.lib;osg.lib;osgGA.lib;osgViewer.lib;osgUtil.lib;osgDB.lib;OpenThreads.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>c:\Python27_x64\libs;C:\Program Files\opencv\lib;C:\Program Files\OpenSceneGraph\lib;C:\Program Files\boost\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>python27.lib;opencv_highgui242.lib;opencv_core242.lib;opencv_video242.lib;opencv_imgproc242.lib;osg.lib;osgGA.lib;osgViewer.lib;osgUtil.lib;osgDB.lib;OpenThreads.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
+    <ClCompile Include="module.cpp" />
+    <ClCompile Include="cvm_python_classes.cpp" />
+    <ClCompile Include="numpy_to_cv.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="process_directory.cpp" />
-    <ClCompile Include="process_file.cpp" />
-    <ClCompile Include="test_main.cpp" />
+    <ClInclude Include="cvm_python_classes.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CVM\CVM.vcxproj">
       <Project>{9b601699-b2ab-4a11-a79b-ff4996d37578}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Motion\Motion.vcxproj">
-      <Project>{ee9026d4-8662-4fb1-bd8e-04d84c91df07}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

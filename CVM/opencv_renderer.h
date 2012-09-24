@@ -4,18 +4,20 @@
 #include <vector>
 #include <cv.h>
 
+#include "utils.h"
+
+namespace videoMosaic {
+
 class OpenCVRenderer
 {
 public:
 	OpenCVRenderer(const boost::property_tree::ptree& ini);
 
-	typedef std::vector<cv::Point2d> Polygon;
-	typedef std::vector<Polygon> PolygonList;
-
-	void Process(const cv::Mat_<cv::Vec3b>& colorImage, const PolygonList& polygons, cv::Mat& output);
+	void Process(const PolygonList& polygons, cv::Size sz, cv::Mat& output);
 
 private:
 	int m_sizeMultiplier;
 	bool m_drawOutline;
 };
 
+}

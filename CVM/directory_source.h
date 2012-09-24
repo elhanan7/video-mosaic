@@ -2,8 +2,10 @@
 #include "video_source.h"
 
 #include <set>
-class DirectorySource :
-	public VideoSource
+
+namespace videoMosaic {
+
+class DirectorySource : public VideoSource
 {
 public:
 	DirectorySource(std::string path, std::string pattern, int startIndex, int stopIndex, bool reverse = false);
@@ -28,3 +30,4 @@ private:
 
 };
 
+}

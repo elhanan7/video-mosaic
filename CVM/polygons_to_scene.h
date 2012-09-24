@@ -5,17 +5,20 @@
 
 #include <boost/property_tree/ptree_fwd.hpp>
 
+#include "utils.h"
+
 namespace osg {class Node;}
+
+namespace videoMosaic {
 
 class PolygonsToScene
 {
 public:
 	PolygonsToScene(const boost::property_tree::ptree& ini);
-	typedef std::vector<cv::Point2d> Polygon;
-	typedef std::vector<Polygon> PolygonList;
-	osg::Node* Process(const cv::Mat_<cv::Vec3b>& img, const PolygonList& polygons);
+	osg::Node* Process(const PolygonList& polygons);
 
 private:
 	bool m_tesselate;
 };
 
+}

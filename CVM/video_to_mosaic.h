@@ -7,6 +7,8 @@
 
 #include <cv.h>
 
+namespace videoMosaic {
+
 class VideoToMosaic
 {
 public:
@@ -23,3 +25,4 @@ private:
 
 };
 
+}

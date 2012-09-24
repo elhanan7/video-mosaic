@@ -4,6 +4,8 @@
 
 using namespace boost::property_tree;
 
+namespace videoMosaic {
+
 ImageToFeatures::ImageToFeatures(const ptree& ini)
 {
 	m_numOfFeatures = ini.get("ImageToFeatures.NumberOfFeatures", 200);
@@ -12,4 +14,6 @@ ImageToFeatures::ImageToFeatures(const ptree& ini)
 
 ImageToFeatures::~ImageToFeatures(void)
 {
+}
+
 }

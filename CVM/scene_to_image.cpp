@@ -9,6 +9,8 @@ namespace bpt = boost::property_tree;
 
 void osr(osg::Node* scene, osgViewer::Viewer* viewer, unsigned int width, unsigned int height, cv::Mat* cvmat);
 
+namespace videoMosaic {
+
 namespace
 {
 	osg::GraphicsContext * GetOffscreenGraphicsContext(unsigned a_tex_width, unsigned a_tex_height)
@@ -82,4 +84,6 @@ void SceneToImage::Process(osg::Node* scene, cv::Size sz, cv::Mat& res)
 	//viewer.run();
  	//cv::Mat wrap(sz.height, sz.width, CV_8UC3, img->data());
 	//wrap.copyTo(res);
+}
+
 }

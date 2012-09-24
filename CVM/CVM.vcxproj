@@ -30,7 +30,7 @@
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
@@ -139,9 +139,8 @@
     <ClCompile Include="clipper.cpp" />
     <ClCompile Include="directory_source.cpp" />
     <ClCompile Include="guide_lines.cpp" />
+    <ClCompile Include="ideal_to_cut_polygons.cpp" />
     <ClCompile Include="image_to_mosaic.cpp" />
-    <ClCompile Include="locations_to_polygons.cpp" />
-    <ClCompile Include="locations_to_scene.cpp" />
     <ClCompile Include="offscreen_render.cpp" />
     <ClCompile Include="opencv_renderer.cpp" />
     <ClCompile Include="polygons_to_scene.cpp" />
@@ -157,9 +156,8 @@
     <ClInclude Include="clipper.hpp" />
     <ClInclude Include="directory_source.h" />
     <ClInclude Include="guide_lines.h" />
+    <ClInclude Include="ideal_to_cut_polygons.h" />
     <ClInclude Include="image_to_mosaic.h" />
-    <ClInclude Include="locations_to_polygons.h" />
-    <ClInclude Include="locations_to_scene.h" />
     <ClInclude Include="locator_grid.h" />
     <ClInclude Include="opencv_renderer.h" />
     <ClInclude Include="polygons_to_scene.h" />
@@ -168,6 +166,7 @@
     <ClInclude Include="topographic_to_locations.h" />
     <ClInclude Include="topological_map_maker.h" />
     <ClInclude Include="transfromations.h" />
+    <ClInclude Include="utils.h" />
     <ClInclude Include="video_source.h" />
     <ClInclude Include="video_to_mosaic.h" />
     <ClInclude Include="voronoi_renderer.h" />

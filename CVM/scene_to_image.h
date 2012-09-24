@@ -5,6 +5,8 @@
 
 #include <boost/property_tree/ptree_fwd.hpp>
 
+namespace videoMosaic {
+
 class SceneToImage
 {
 public:
@@ -13,3 +15,4 @@ public:
 	void Process(osg::Node*, cv::Size sz, cv::Mat& res);
 };
 
+}

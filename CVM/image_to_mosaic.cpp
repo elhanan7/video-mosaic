@@ -2,46 +2,67 @@
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace bpt = boost::property_tree;
 using namespace cv;
 
+namespace videoMosaic {
+
 namespace
 {
-	void JoinLocationsWithMask(const TopographicToLocations::LocationList& oldLocs,
-							const std::vector<float> oldOrientations,
-							const TopographicToLocations::LocationList& newLocs,
-							const std::vector<float> newOrientations,
-							const cv::Mat_<unsigned char> mask,
-							TopographicToLocations::LocationList& result,
-							std::vector<float>& resultOrientation)
+	cv::Size ProcessTileSize(const bpt::ptree& ini, const cv::Size defval)
 	{
-		size_t idx = 0;
-		for (auto iter = oldLocs.cbegin(); iter != oldLocs.cend(); ++iter)
+		std::string value = ini.get("ImageToMosaic.TileSize", "");
+		if (value == "")
 		{
-			if (!mask(*iter))
+			return defval;
+		}
+		boost::algorithm::trim(value);
+		std::vector<std::string> tokens;
+		boost::algorithm::split(tokens, value, boost::is_any_of(",x "), boost::token_compress_on);
+		if (tokens.size() == 0)
+		{
+			return defval;
+		}
+		else if (tokens.size() == 1)
+		{
+			int size = boost::lexical_cast<int>(tokens[0]);
+			return cv::Size(size,size);
+		}
+		else
+		{
+			int sizex = boost::lexical_cast<int>(tokens[0]);
+			int sizey = boost::lexical_cast<int>(tokens[1]);
+			return cv::Size(sizex,sizey);
+		}
+	}
+
+	void JoinPolygonsWithMask(const IdealPolygonList& oldPolys,
+							  const IdealPolygonList& newPolys,
+							  const cv::Mat_<unsigned char> mask,
+							  IdealPolygonList& result)
+	{
+		for (auto iter = oldPolys.cbegin(); iter != oldPolys.cend(); ++iter)
+		{
+			if (!mask(iter->center))
 			{
 				result.push_back(*iter);
-				resultOrientation.push_back(oldOrientations[idx]);
 			}
-			++idx;
 		}
 
-		idx = 0;
-		for (auto iter = newLocs.cbegin(); iter != newLocs.cend(); ++iter)
+		for (auto iter = newPolys.cbegin(); iter != newPolys.cend(); ++iter)
 		{
-			if (mask(*iter))
+			if (mask(iter->center))
 			{
 				result.push_back(*iter);
-				resultOrientation.push_back(newOrientations[idx]);
 			}
-			++idx;
 		}
 	}
 }
 
 ImageToMosaic::ImageToMosaic(const bpt::ptree& ini) :
-	m_guideLines(ini), m_topologicalMapMaker(ini), m_topologicalToLocations(ini), m_locationsToPolygons(ini), m_povRayRenderer(ini), m_polygonsToScene(ini), m_sceneToImage(ini), m_opencvRenderer(ini), m_voronoiRenderer(ini)
+	m_guideLines(ini), m_topologicalMapMaker(ini), m_topologicalToLocations(ini), m_idealToCutPolygon(ini), m_povRayRenderer(ini), m_polygonsToScene(ini), m_sceneToImage(ini), m_opencvRenderer(ini), m_voronoiRenderer(ini)
 {
 	std::string tmp;
 	tmp = ini.get("ImageToMosaic.RenderImpl", "POV_RAY");
@@ -69,6 +90,7 @@ ImageToMosaic::ImageToMosaic(const bpt::ptree& ini) :
 	m_saveTopographic = ini.get("ImageToMosaic.SaveTopographic", true);
 	m_maskTileLocationsWithMotion = ini.get("ImageToMosaic.MaskTileLocationsWithMotion", false);
 	m_maskGuideLinesWithMotion = ini.get("ImageToMosaic.MaskGuideLinesWithMotion", true);
+	m_tsize = ProcessTileSize(ini, cv::Size(4,4));
 }
 
 
@@ -88,48 +110,51 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 	}
 	m_lastGL = edges.clone();
 	cv::Mat_<float> dx,dy;
-	m_topologicalMapMaker.Process(edges, edges, dx, dy);
-	TopographicToLocations::LocationList currentCenters, centers;
-	m_topologicalToLocations.Process(edges, currentCenters);
-	std::vector<float> currentOrientations(currentCenters.size()), orientations;
-	std::transform(currentCenters.begin(), currentCenters.end(), currentOrientations.begin(),
-		[&,dx,dy](const cv::Point& pt) -> float
+	m_topologicalMapMaker.Process(edges, edges, m_tsize, dx, dy);
+	IdealPolygonList currentPolygons, polygons;
+	m_topologicalToLocations.Process(edges, m_tsize, currentPolygons);
+	
+	for (auto iter = currentPolygons.begin(); iter != currentPolygons.end(); ++iter)
 	{
-		return atan2(dy(pt), dx(pt));
-	});
+		iter->color = input(iter->center);
+		iter->orientation = atan2(dy(iter->center), dx(iter->center));
+	}
+	
 	if (m_maskTileLocationsWithMotion &&  !motionMask.empty())
 	{
-		JoinLocationsWithMask(m_lastLocations, m_lastOrientations, currentCenters, currentOrientations, motionMask, centers, orientations);
+		JoinPolygonsWithMask(m_lastPolygons, currentPolygons, motionMask, polygons);
 	}
 	else
 	{
-		centers = currentCenters;
-		orientations = currentOrientations;
+		polygons = currentPolygons;
 	}
-	m_lastLocations = centers;
-	m_lastOrientations = orientations;
+	m_lastPolygons = polygons;
+
 	if (m_renderImpl == RENDER_VORONOI)
 	{
-		m_voronoiRenderer.Process(centers, frame, fcolor);
+		m_voronoiRenderer.Process(polygons, input.size(), fcolor);
 		output = fcolor;
 		return;
 	}
-	LocationsToPolygons::PolygonList polys;
+	
+	PolygonList cutPolys;
 
-	m_locationsToPolygons.Process(centers, orientations, cv::Size(frame.cols, frame.rows), polys);
+	m_idealToCutPolygon.Process(polygons, m_tsize, frame.size(), cutPolys);
 	if (m_renderImpl == RENDER_POV_RAY)
 	{
-		m_povRayRenderer.Process(frame, polys, fcolor);
+		m_povRayRenderer.Process(cutPolys, frame.size(), fcolor);
 	}
 	else if (m_renderImpl == RENDER_OSG)
 	{
-		osg::Node* scene = m_polygonsToScene.Process(frame, polys);
+		osg::Node* scene = m_polygonsToScene.Process(cutPolys);
 		m_sceneToImage.Process(scene,cv::Size(frame.cols, frame.rows) ,fcolor);
 	}
 	else if (m_renderImpl == RENDER_OPENCV)
 	{
-		m_opencvRenderer.Process(frame, polys, fcolor);
+		m_opencvRenderer.Process(cutPolys, frame.size(), fcolor);
 	}
 
 	output = fcolor;
+}
+
 }

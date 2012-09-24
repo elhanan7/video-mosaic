@@ -5,6 +5,8 @@
 
 namespace bpt = boost::property_tree;
 
+namespace videoMosaic {
+
 class VideoToMHIImpl
 {
 public:
@@ -95,3 +97,4 @@ void VideoToMHI::TakeSegmentation(std::vector<cv::Rect>& segmentation)
 	m_pimpl->TakeSegmentation(segmentation);
 }
 
+}

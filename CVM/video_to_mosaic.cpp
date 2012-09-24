@@ -2,6 +2,7 @@
 
 #include <boost/property_tree/ptree_fwd.hpp>
 
+namespace videoMosaic {
 
 VideoToMosaic::VideoToMosaic(const boost::property_tree::ptree& ini)
 {
@@ -46,4 +47,4 @@ void VideoToMosaic::ProcessNext(const cv::Mat_<cv::Vec3b> input, cv::Mat& output
 	output = result;
 }
 
-
+}

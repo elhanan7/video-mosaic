@@ -3,6 +3,8 @@
 #include <functional>
 #include <cv.h>
 
+namespace videoMosaic {
+
 namespace transformations
 {
 	typedef cv::Point2d Point;
@@ -54,4 +56,4 @@ namespace transformations
 	{
 		return Compose<F1,F2>(f1,f2);
 	}
-}
+} }

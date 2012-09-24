@@ -1,6 +1,7 @@
 #include <cv.h>
 #include "images_to_mask.h"
 
+namespace videoMosaic {
 
 ImagesToMask::ImagesToMask(void)
 {
@@ -32,4 +33,6 @@ void ImagesToMask::Process(const cv::Mat& a, const cv::Mat b, cv::Point2f global
 	cv::meanStdDev(flow, mean, oneDeviationMat);
 	float oneDeviation = oneDeviationMat.at<float>(0);
 	std::cout << oneDeviation << std::endl;
+}
+
 }

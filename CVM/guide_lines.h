@@ -3,6 +3,8 @@
 
 #include <boost/property_tree/ptree_fwd.hpp>
 
+namespace videoMosaic {
+
 class GuideLines
 {
 public:
@@ -15,4 +17,6 @@ private:
 	int m_contourSizeLimit;
 	bool m_useStd;
 };
+
+}
 

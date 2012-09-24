@@ -10,6 +10,7 @@
 
 namespace bpt = boost::property_tree;
 
+namespace videoMosaic {
 
 GuideLines::GuideLines(const bpt::ptree& ini)
 {
@@ -67,4 +68,6 @@ void GuideLines::Process(const cv::Mat& in, cv::Mat& out)
 	}
 
 	cv::waitKey();
+}
+
 }

@@ -3,15 +3,16 @@
 #include <cv.h>
 #include <boost/property_tree/ptree_fwd.hpp>
 
+#include "utils.h"
+
+namespace videoMosaic {
+
 class PovRayRenderer
 {
 public:
-	typedef std::vector<cv::Point2d> Polygon;
-	typedef std::vector<Polygon> PolygonList;
-
 	PovRayRenderer(const boost::property_tree::ptree& ini);
 
-	void Process(const cv::Mat_<cv::Vec3b>& img, const PolygonList& polygons, cv::Mat& res);
+	void Process(const PolygonList& polys, cv::Size sz, cv::Mat& res);
 
 private:
 	int m_sizeMultiplier;
@@ -20,3 +21,4 @@ private:
 	float m_tileHeight;
 };
 
+}

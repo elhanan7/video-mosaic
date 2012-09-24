@@ -12,6 +12,8 @@
 
 namespace bpt = boost::property_tree;
 
+namespace videoMosaic {
+
 namespace
 {
 	double maxX(0), maxY(0);
@@ -36,7 +38,7 @@ namespace
 	}
 
 	std::string SerializePolygon(cv::Size sz, 
-		                         const PovRayRenderer::Polygon& p, 
+		                         const std::vector<cv::Point2d>& p, 
 								 cv::Vec3b color,
 								 float height = 2.0f)
 	{
@@ -70,11 +72,8 @@ PovRayRenderer::PovRayRenderer(const bpt::ptree& ini)
 }
 
 
-void PovRayRenderer::Process(const cv::Mat_<cv::Vec3b>& img, 
-	const PolygonList& polygons, 
-	cv::Mat& res)
+void PovRayRenderer::Process(const PolygonList& polygons, cv::Size sz, cv::Mat& res)
 {
-	cv::Size sz(img.cols, img.rows);
 	cv::Size2f halfSize(sz.width/2.0f, sz.height/2.0f);
 
 	std::string tempNameNoExt = GenerateTempFileName();
@@ -97,10 +96,7 @@ void PovRayRenderer::Process(const cv::Mat_<cv::Vec3b>& img,
 
 	for (auto iter = polygons.cbegin(); iter != polygons.cend(); ++iter)
 	{
-		int clampedX = std::min(std::max((int)(*iter)[0].x, 0), sz.width - 1);
-		int clampedY = std::min(std::max((int)(*iter)[0].y, 0), sz.height - 1);
-		cv::Vec3b color = img(cv::Point(clampedX, clampedY));
-		file << SerializePolygon(sz, *iter, color, m_tileHeight);
+		file << SerializePolygon(sz, iter->polygon, iter->ideal.color, m_tileHeight);
 	}
 	file.close();
 	std::stringstream cmdStream;
@@ -111,4 +107,6 @@ void PovRayRenderer::Process(const cv::Mat_<cv::Vec3b>& img,
 	remove(tempName.c_str());
 	remove(tempResName.c_str());
 	
+}
+
 }

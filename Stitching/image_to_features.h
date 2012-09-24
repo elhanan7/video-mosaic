@@ -2,6 +2,8 @@
 
 #include <boost/property_tree/ptree.hpp>
 
+namespace videoMosaic {
+
 class ImageToFeatures
 {
 public:
@@ -13,3 +15,4 @@ private:
 	float m_minimalMatchDistance;
 };
 
+}

@@ -4,6 +4,8 @@
 #include <boost/multi_array.hpp>
 #include <vector>
 
+namespace videoMosaic {
+
 class LocatorGrid
 {
 public:
@@ -44,3 +46,4 @@ private:
 	int m_tsize;
 };
 
+}

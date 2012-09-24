@@ -6,19 +6,14 @@
 
 namespace bpt = boost::property_tree;
 
+namespace videoMosaic {
+
 TopographicToLocations::TopographicToLocations(const bpt::ptree& ini)
 {
-	m_tsize = ini.get("ImageToMosaic.TileSize", 4);
 	m_holeFillingIterations = ini.get("TopographicToLocations.HoleFillingIterations", 1);
 }
 
 namespace {
-cv::Point  clamp(const cv::Point& in, int clampx,int clampy)
-{
-	int rx = std::min(clampx, std::max(in.x,0));
-	int ry = std::min(clampy, std::max(in.y,0));
-	return cv::Point(rx, ry);
-}
 
 void Skeleton(cv::Mat_<unsigned char> input, cv::Mat& output)
 {
@@ -46,7 +41,7 @@ void Skeleton(cv::Mat_<unsigned char> input, cv::Mat& output)
 }
 }
 
-void TopographicToLocations::Process(const cv::Mat_<unsigned char>& topo, LocationList& locations)
+void TopographicToLocations::Process(const cv::Mat_<unsigned char>& topo, cv::Size tsize, IdealPolygonList& polygons)
 {
 	typedef std::vector<std::vector<cv::Point> > Contours;
 	Contours contours;
@@ -57,7 +52,6 @@ void TopographicToLocations::Process(const cv::Mat_<unsigned char>& topo, Locati
 	locationsImage = topoCopy;
 	locationsImage.setTo(0);
 
-	cv::Point half(m_tsize - 1, m_tsize - 1);
 	cv::Point ones(1,1);
 	cv::Point tl, br;
 	size_t nc = contours.size();
@@ -65,25 +59,31 @@ void TopographicToLocations::Process(const cv::Mat_<unsigned char>& topo, Locati
 	{
 		for (size_t j = 0; j < contours[i].size(); ++j)
 		{
+			cv::Point half(tsize.width - 1, tsize.height - 1);
+			IdealPolygon poly;
 			cv::Point thisPt = contours[i][j];
 			tl = thisPt - half + ones;
 			br = thisPt + half;
-			tl = clamp(tl, locationsImage.cols - 1, locationsImage.rows - 1);
-			br = clamp(br, locationsImage.cols - 1, locationsImage.rows - 1);
+			tl = clamp(tl, locationsImage.size());
+			br = clamp(br, locationsImage.size());
 			if (cv::sum(locationsImage(cv::Rect(tl, br)))[0] > 0) 
 			{
 				continue;
 			}
 			locationsImage(thisPt) = 255;
-			locations.push_back(thisPt);
+			poly.center = clamp(thisPt, topo.size());
+			poly.tileSize = tsize;
+			polygons.push_back(poly);
 		}
 	}
 
-	for (int counter = 0; counter < m_holeFillingIterations; ++counter) 
+	cv::Size currentSize = tsize - cv::Size(1,1);
+	int minCounter = std::min(std::min(m_holeFillingIterations, tsize.width - 3), tsize.height - 3);
+	for (int counter = 0; counter < minCounter; ++counter) 
 	{
 		cv::Mat_<float> lonleyPixels;
 		cv::distanceTransform(255 - locationsImage, lonleyPixels, CV_DIST_C, 3);
-		cv::threshold(lonleyPixels, lonleyPixels, m_tsize / 2 , 1.0f, CV_THRESH_BINARY);
+		cv::threshold(lonleyPixels, lonleyPixels, (currentSize.width + currentSize.height) / 2 , 1.0f, CV_THRESH_BINARY);
 		Skeleton(lonleyPixels,lonleyPixels);
 		cv::Mat_<unsigned char> ucLonely;
 		lonleyPixels.convertTo(ucLonely, CV_8UC1);
@@ -92,6 +92,8 @@ void TopographicToLocations::Process(const cv::Mat_<unsigned char>& topo, Locati
 		{
 			for (int c = 0; c < ucLonely.cols; ++c)
 			{
+				cv::Point half(currentSize.width - 1, currentSize.height - 1);
+				IdealPolygon poly;
 				cv::Point thisPt(c,r);
 				if (ucLonely(thisPt) != 1)
 				{
@@ -99,16 +101,21 @@ void TopographicToLocations::Process(const cv::Mat_<unsigned char>& topo, Locati
 				}
 				tl = thisPt - half + ones;
 				br = thisPt + half;
-				tl = clamp(tl, locationsImage.cols - 1, locationsImage.rows - 1);
-				br = clamp(br, locationsImage.cols - 1, locationsImage.rows - 1);
+				tl = clamp(tl, locationsImage.size());
+				br = clamp(br, locationsImage.size());
 				if (cv::sum(locationsImage(cv::Rect(tl, br)))[0] > 0) 
 				{
 					continue;
 				}
 				locationsImage(thisPt) = 255;
-				locations.push_back(thisPt);
+				poly.center = clamp(thisPt, topo.size());
+				poly.tileSize = currentSize;
+				polygons.push_back(poly);
 			}
 		}
+		currentSize = currentSize - cv::Size(1,1);
 	}
+
+}
 
 }

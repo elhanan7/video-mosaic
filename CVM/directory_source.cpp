@@ -7,6 +7,7 @@
 
 namespace bfs = boost::filesystem;
 
+namespace videoMosaic {
 
 DirectorySource::DirectorySource(std::string path, std::string pattern, int startIndex, int stopIndex, bool reverse)
 {
@@ -80,6 +81,8 @@ std::string DirectorySource::GetName() const
 		PathVector::const_reverse_iterator cit = m_currentr;
 		return *(--cit);
 	}
+}
+
 }
 
 

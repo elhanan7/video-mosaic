@@ -5,21 +5,23 @@
 
 #include <boost/property_tree/ptree_fwd.hpp>
 
+#include "utils.h"
+
+namespace videoMosaic {
+
 class TopographicToLocations
 {
 public:
 
 	TopographicToLocations(const boost::property_tree::ptree& ini);
 
-	typedef std::vector<cv::Point> LocationList;
-	void Process(const cv::Mat_<unsigned char>& topo, LocationList& locations);
+	void Process(const cv::Mat_<unsigned char>& topo, cv::Size tsize, IdealPolygonList& polygons);
 
 private:
 
-	int m_tsize;
 	int m_holeFillingIterations;
 };
 
-
+}
 
 

@@ -4,6 +4,8 @@
 
 #include <cv.h>
 
+namespace videoMosaic {
+
 class VideoToMHIImpl;
 
 class VideoToMHI
@@ -20,3 +22,4 @@ private:
 
 };
 
+}

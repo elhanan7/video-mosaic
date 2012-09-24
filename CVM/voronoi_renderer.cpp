@@ -2,7 +2,8 @@
 
 #include <boost/property_tree/ptree.hpp>
 
-#include <iterator>
+
+namespace videoMosaic {
 
 namespace
 {
@@ -29,29 +30,13 @@ VoronoiRenderer::VoronoiRenderer(const boost::property_tree::ptree& ini)
 	m_sizeMultiplier = ini.get("VoronoiRenderer.SizeMultiplier", 2);
 }
 
-void VoronoiRenderer::Process(const std::vector<cv::Point>& locations, cv::Mat_<cv::Vec3b> colorImage, cv::Mat& output)
+void VoronoiRenderer::Process(const IdealPolygonList& polys, cv::Size sz, cv::Mat& output)
 {
-	std::vector<cv::Vec3b> colors;
-	std::vector<cv::Point> multLocations;
-	std::transform(locations.cbegin(), locations.cend(), std::back_inserter(colors),
-		[&](const cv::Point& pt) -> cv::Vec3b
-		{
-			return colorImage(pt);
-		}
-	);
-
-	std::transform(locations.cbegin(), locations.cend(), std::back_inserter(multLocations),
-		[&](const cv::Point& pt) -> cv::Point
-		{
-			return cv::Point(m_sizeMultiplier * pt.x, m_sizeMultiplier * pt.y);
-		}
-	);
-
-	cv::Mat_<unsigned char> src = cv::Mat_<unsigned char>::ones(m_sizeMultiplier * colorImage.rows, m_sizeMultiplier * colorImage.cols);
+	cv::Mat_<unsigned char> src = cv::Mat_<unsigned char>::ones(sz * m_sizeMultiplier);
 	cv::Mat_<float> dst(src.rows, src.cols);
-	for (auto iter = multLocations.cbegin(); iter!= multLocations.cend(); ++iter)
+	for (auto iter = polys.cbegin(); iter!= polys.cend(); ++iter)
 	{
-		src(*iter) = 0;
+		src(iter->center * m_sizeMultiplier) = 0;
 	}
 	cv::Mat_<int> labels;
 	cv::distanceTransform(src, dst, labels, CV_DIST_C, 3, CV_DIST_LABEL_PIXEL);
@@ -68,10 +53,10 @@ void VoronoiRenderer::Process(const std::vector<cv::Point>& locations, cv::Mat_<
 	cv::Mat_<cv::Vec3b> result = cv::Mat_<cv::Vec3b>::zeros(src.rows, src.cols);
 
 	int index = 0;
-	for (auto iter = multLocations.cbegin(); iter != multLocations.cend(); ++iter)
+	for (auto iter = polys.cbegin(); iter != polys.cend(); ++iter)
 	{
-		lut.insert(std::make_pair(labels(*iter), index));
-		result(*iter) = colors[index];
+		lut.insert(std::make_pair(labels(iter->center * m_sizeMultiplier), index));
+		//result(iter->center * m_sizeMultiplier) = polys[index].color;
 		index++;
 	}
 
@@ -83,10 +68,12 @@ void VoronoiRenderer::Process(const std::vector<cv::Point>& locations, cv::Mat_<
 			std::map<int, int>::const_iterator mapIter = lut.find(labels(pt));
 			if (mapIter != lut.end())
 			{
-				result(pt) = colors[mapIter->second];
+				result(pt) = polys[mapIter->second].color;
 			}
 		}
 	}
 	result.setTo(cv::Vec3b(100,100,100), laplacianMask);
 	output = result;
+}
+
 }

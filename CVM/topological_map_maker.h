@@ -4,12 +4,13 @@
 
 #include <boost/property_tree/ptree_fwd.hpp>
 
+namespace videoMosaic {
+
 class TopologicalMapMaker
 {
 public:
 	TopologicalMapMaker(const boost::property_tree::ptree& ini);
-	void Process(const cv::Mat& in, cv::Mat& out, cv::Mat& dx, cv::Mat& dy);
-private:
-	int m_tsize;
+	void Process(const cv::Mat& in, cv::Mat& out, cv::Size tsize, cv::Mat& dx, cv::Mat& dy);
 };
 
+}

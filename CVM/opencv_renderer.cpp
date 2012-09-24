@@ -2,6 +2,7 @@
 
 #include <boost/property_tree/ptree.hpp>
 
+namespace videoMosaic {
 
 OpenCVRenderer::OpenCVRenderer(const boost::property_tree::ptree& ini)
 {
@@ -9,22 +10,21 @@ OpenCVRenderer::OpenCVRenderer(const boost::property_tree::ptree& ini)
 	m_drawOutline = ini.get("OpenCVRenderer.DrawOutline", true);
 }
 
-void OpenCVRenderer::Process(const cv::Mat_<cv::Vec3b>& colorImage, const PolygonList& polygons, cv::Mat& output)
+void OpenCVRenderer::Process(const PolygonList& polygons, cv::Size sz, cv::Mat& output)
 {
-	cv::Mat_<cv::Vec3b> result(m_sizeMultiplier*colorImage.rows, m_sizeMultiplier*colorImage.cols);
+	cv::Mat_<cv::Vec3b> result(sz * m_sizeMultiplier);
 	result.setTo(cv::Vec3b(100,100,100));
 	auto fixCoord = [&](cv::Point2d ptd) -> cv::Point2i
 	{
-		int clampedX = m_sizeMultiplier*std::min(std::max((int)ptd.x, 0), colorImage.cols - 1);
-		int clampedY = m_sizeMultiplier*std::min(std::max((int)ptd.y, 0), colorImage.rows - 1);
-		return cv::Point2i(clampedX, clampedY);
+		cv::Point2d mult = ptd * m_sizeMultiplier;
+		return cv::Point2i(cv::saturate_cast<int>(mult.x), cv::saturate_cast<int>(mult.y));
 	};
 
 	for (auto iter = polygons.cbegin(); iter != polygons.cend(); ++iter)
 	{
 		std::vector<cv::Point2i> fixedVec;
-		std::transform(iter->cbegin(), iter->cend(), std::back_inserter(fixedVec), fixCoord);
-		cv::Vec3b color = colorImage(cv::Point2i(fixedVec[0].x/m_sizeMultiplier, fixedVec[0].y/m_sizeMultiplier));
+		std::transform(iter->polygon.cbegin(), iter->polygon.cend(), std::back_inserter(fixedVec), fixCoord);
+		cv::Vec3b color = iter->ideal.color;
 
 		cv::fillConvexPoly(result, fixedVec, cv::Scalar(color));
 		if (m_drawOutline)
@@ -34,4 +34,6 @@ void OpenCVRenderer::Process(const cv::Mat_<cv::Vec3b>& colorImage, const Polygo
 	}
 
 	output = result;
+}
+
 }

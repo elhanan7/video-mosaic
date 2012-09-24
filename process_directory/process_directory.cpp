@@ -1,5 +1,3 @@
-#include <boost/test/unit_test.hpp>
-
 #include <cv.h>
 #include <highgui.h>
 
@@ -11,17 +9,17 @@
 
 using namespace cv;
 
-BOOST_AUTO_TEST_CASE(process_directory)
+int main()
 {
 	Mat_<cv::Vec3b> frame, fcolor;
 	Mat edges;
 
 	cv::Mat_<unsigned char> final;
-	DirectorySource ds(".", "frame(\\d+)\\.png",0,0, true);
+	videoMosaic::DirectorySource ds(".", "frame(\\d+)\\.png",0,0);
 
 	boost::property_tree::ptree ini;
 	boost::property_tree::ini_parser::read_ini("C:\\Users\\elhanan7\\Programming\\CVM\\Data\\INI\\cvm.ini", ini);
-	VideoToMosaic vtm(ini);
+	videoMosaic::VideoToMosaic vtm(ini);
 	bool first = true;
 	while (ds.HasNext())
 	{
@@ -36,5 +34,6 @@ BOOST_AUTO_TEST_CASE(process_directory)
 		//boost::unit_test::framework::master_test_suite().argv;
 		
 		cv::imwrite(outName, fcolor);
-	}	
+	}
+	return 0;
 }

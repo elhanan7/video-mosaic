@@ -2,6 +2,8 @@
 
 #include <cv.h>
 
+namespace videoMosaic {
+
 class VideoSource
 {
 public:
@@ -17,5 +19,7 @@ inline
 	void VideoSource::Reset()
 {
 	throw new std::logic_error("Not implemented");
+}
+
 }
 

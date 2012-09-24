@@ -45,9 +45,6 @@
     <ClCompile Include="directory_source.cpp">
       <Filter>Source Files\video_source</Filter>
     </ClCompile>
-    <ClCompile Include="locations_to_scene.cpp">
-      <Filter>Source Files\renderers</Filter>
-    </ClCompile>
     <ClCompile Include="offscreen_render.cpp">
       <Filter>Source Files\renderers</Filter>
     </ClCompile>
@@ -69,9 +66,6 @@
     <ClCompile Include="image_to_mosaic.cpp">
       <Filter>Source Files\algorithm</Filter>
     </ClCompile>
-    <ClCompile Include="locations_to_polygons.cpp">
-      <Filter>Source Files\algorithm</Filter>
-    </ClCompile>
     <ClCompile Include="topographic_to_locations.cpp">
       <Filter>Source Files\algorithm</Filter>
     </ClCompile>
@@ -86,6 +80,9 @@
     </ClCompile>
     <ClCompile Include="pov_ray_renderer.cpp">
       <Filter>Source Files\renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="ideal_to_cut_polygons.cpp">
+      <Filter>Source Files\algorithm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -102,9 +99,6 @@
       <Filter>Header Files\renderers</Filter>
     </ClInclude>
     <ClInclude Include="scene_to_image.h">
-      <Filter>Header Files\renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="locations_to_scene.h">
       <Filter>Header Files\renderers</Filter>
     </ClInclude>
     <ClInclude Include="transfromations.h">
@@ -125,9 +119,6 @@
     <ClInclude Include="image_to_mosaic.h">
       <Filter>Header Files\algorithm</Filter>
     </ClInclude>
-    <ClInclude Include="locations_to_polygons.h">
-      <Filter>Header Files\algorithm</Filter>
-    </ClInclude>
     <ClInclude Include="topographic_to_locations.h">
       <Filter>Header Files\algorithm</Filter>
     </ClInclude>
@@ -142,6 +133,12 @@
     </ClInclude>
     <ClInclude Include="pov_ray_renderer.h">
       <Filter>Header Files\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ideal_to_cut_polygons.h">
+      <Filter>Header Files\algorithm</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

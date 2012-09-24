@@ -12,12 +12,14 @@
 
 namespace bpt = boost::property_tree;
 
+namespace videoMosaic {
+
 PolygonsToScene::PolygonsToScene(const bpt::ptree& ini)
 {
 	m_tesselate = ini.get("OSGRenderer.Tesselate", false);
 }
 
-osg::Node* PolygonsToScene::Process(const cv::Mat_<cv::Vec3b>& img, const PolygonList& polygons)
+osg::Node* PolygonsToScene::Process(const PolygonList& polygons)
 {
 	auto geom = new osg::Geometry;
 	auto vertices = new osg::Vec3Array;
@@ -26,11 +28,11 @@ osg::Node* PolygonsToScene::Process(const cv::Mat_<cv::Vec3b>& img, const Polygo
 
 	for (size_t i = 0; i < polygons.size(); ++i)
 	{
-		size_t n = polygons[i].size();
-		cv::Vec3b color = img(cv::Point((int)polygons[i][0].x, std::max((int)polygons[i][0].y, 0)));
+		size_t n = polygons[i].polygon.size();
+		cv::Vec3b color = polygons[i].ideal.color;
 		osg::Vec4 clr = osg::Vec4(color[2] / 155.0f, color[1] / 155.0f, color[0] / 155.0f, 1.0f);
 		for (size_t j = 0; j < n; ++j) colors->push_back(clr);
-		std::transform(polygons[i].begin(), polygons[i].end(), std::back_inserter(*vertices), 
+		std::transform(polygons[i].polygon.begin(), polygons[i].polygon.end(), std::back_inserter(*vertices), 
 			[](const cv::Point2d& pt) -> osg::Vec3
 		{
 			return osg::Vec3(pt.x, pt.y, 0);
@@ -65,4 +67,6 @@ osg::Node* PolygonsToScene::Process(const cv::Mat_<cv::Vec3b>& img, const Polygo
 	osg::Geode* gd = new osg::Geode;
 	gd->addDrawable(geom);
 	return gd;
+}
+
 }

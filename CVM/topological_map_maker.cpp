@@ -4,12 +4,13 @@
 
 namespace bpt = boost::property_tree;
 
-TopologicalMapMaker::TopologicalMapMaker(const bpt::ptree& ini)
+namespace videoMosaic {
+
+TopologicalMapMaker::TopologicalMapMaker(const bpt::ptree&)
 {
-		m_tsize = ini.get("ImageToMosaic.TileSize", 4);
 }
 
-void TopologicalMapMaker::Process(const cv::Mat& in, cv::Mat& dist, cv::Mat& dx, cv::Mat& dy)
+void TopologicalMapMaker::Process(const cv::Mat& in, cv::Mat& dist, cv::Size tsize, cv::Mat& dx, cv::Mat& dy)
 {
 	cv::Mat floatImg(in.rows, in.cols, CV_32FC1);
 	cv::bitwise_not(in, dist);
@@ -21,10 +22,12 @@ void TopologicalMapMaker::Process(const cv::Mat& in, cv::Mat& dist, cv::Mat& dx,
 		unsigned char* outPtr = dist.ptr<unsigned char>(i);
 		for (int j = 0; j < dist.cols; ++j)
 		{
-			outPtr[j] = (static_cast<int>(inPtr[j]) % m_tsize == 0)? 255 : 0; 
+			outPtr[j] = (static_cast<int>(inPtr[j]) % tsize.height == 0)? 255 : 0; 
 		}
 	}
 	cv::Sobel(floatImg, dx, CV_32FC1, 1, 0);
 	cv::Sobel(floatImg, dy, CV_32FC1, 0, 1);
+}
+
 }
 
