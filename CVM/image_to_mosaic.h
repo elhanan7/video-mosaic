@@ -47,6 +47,7 @@ private:
 	cv::Mat_<unsigned char> m_lastGL;
 	bool m_maskTileLocationsWithMotion;
 	bool m_maskGuideLinesWithMotion;
+	bool m_recolorize;
 	cv::Size m_tsize;
 };
 

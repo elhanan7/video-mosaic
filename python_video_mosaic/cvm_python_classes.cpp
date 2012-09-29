@@ -22,5 +22,16 @@ namespace videoMosaic { namespace python {
 		return m_ptree.get<std::string>(param);
 	}
 
+	PyObject* PythonImageToMosaic::ProcessFile(const std::string& fname)
+		{
+			cv::Mat m = cv::imread(fname);
+			cv::Mat_<cv::Vec3b> out;
+			itm.Process(m, out);
+			cv::Mat outMat(out);
+			PyObject* o;
+			mat_to_numpy(outMat, &o);
+			return o;
+		}
+
 
 } }

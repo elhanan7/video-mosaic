@@ -91,6 +91,7 @@ ImageToMosaic::ImageToMosaic(const bpt::ptree& ini) :
 	m_maskTileLocationsWithMotion = ini.get("ImageToMosaic.MaskTileLocationsWithMotion", false);
 	m_maskGuideLinesWithMotion = ini.get("ImageToMosaic.MaskGuideLinesWithMotion", true);
 	m_tsize = ProcessTileSize(ini, cv::Size(4,4));
+	m_recolorize = ini.get("ImageToMosaic.RecolorizeOnEachFrame", true);
 }
 
 
@@ -112,7 +113,7 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 	cv::Mat_<float> dx,dy;
 	m_topologicalMapMaker.Process(edges, edges, m_tsize, dx, dy);
 	IdealPolygonList currentPolygons, polygons;
-	m_topologicalToLocations.Process(edges, m_tsize, currentPolygons);
+	m_topologicalToLocations.Process(edges, dx, dy, m_tsize, currentPolygons);
 	
 	for (auto iter = currentPolygons.begin(); iter != currentPolygons.end(); ++iter)
 	{
@@ -128,7 +129,16 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 	{
 		polygons = currentPolygons;
 	}
+
+	if (m_recolorize)
+	{
+		for (auto iter = polygons.begin(); iter != polygons.end(); ++iter)
+		{
+			iter->color = input(iter->center);
+		}
+	}
 	m_lastPolygons = polygons;
+
 
 	if (m_renderImpl == RENDER_VORONOI)
 	{

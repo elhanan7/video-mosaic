@@ -67,7 +67,6 @@ void GuideLines::Process(const cv::Mat& in, cv::Mat& out)
 		cv::drawContours(out, bigContours, -1, 255);
 	}
 
-	cv::waitKey();
 }
 
 }

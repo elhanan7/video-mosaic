@@ -1,8 +1,6 @@
+#include <Windows.h>
 #include "scene_to_image.h"
-
 #include <osgViewer/Viewer>
-#include <osg/GraphicsContext>
-
 #include <boost/property_tree/ptree.hpp>
 
 namespace bpt = boost::property_tree;
@@ -11,25 +9,6 @@ void osr(osg::Node* scene, osgViewer::Viewer* viewer, unsigned int width, unsign
 
 namespace videoMosaic {
 
-namespace
-{
-	osg::GraphicsContext * GetOffscreenGraphicsContext(unsigned a_tex_width, unsigned a_tex_height)
-	{
-		osg::ref_ptr<osg::GraphicsContext::Traits> traits=new
-			osg::GraphicsContext::Traits;
-
-		traits->width = a_tex_width;
-		traits->height = a_tex_height;
-		//    traits->doubleBuffer = true;
-		traits->pbuffer = true;
-
-		osg::GraphicsContext*
-			gc=osg::GraphicsContext::createGraphicsContext(traits.get());
-		// TODO: Above returning NULL!
-
-		return gc;
-	}
-}
 SceneToImage::SceneToImage(const bpt::ptree&)
 {
 }

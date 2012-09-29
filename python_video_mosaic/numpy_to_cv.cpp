@@ -150,4 +150,23 @@ bool numpy_to_mat(const PyObject* o, cv::Mat& m, bool allowND)
 
     return true;
 }
+
+bool mat_to_numpy(const cv::Mat& m, PyObject** o)
+{
+	int typenum = m.type();
+	int type = typenum == CV_8UC3 ? NPY_UBYTE :
+		       typenum == CV_8U ? NPY_UBYTE  : typenum == CV_8S ? NPY_BYTE :
+               typenum == CV_16U ? NPY_USHORT : typenum == CV_16S ? NPY_SHORT :
+               typenum == CV_32S ? NPY_INT :
+               typenum == CV_32F ? NPY_FLOAT :
+               typenum == CV_64F ? NPY_DOUBLE : -1;
+	int typeSize = m.elemSize();
+	npy_intp dims[] = {m.rows, m.cols, typenum == CV_8UC3? 3 : 1};
+	npy_intp strides[] = {m.step, typeSize, 1};
+	PyObject* tmp = PyArray_New(&PyArray_Type, typenum == CV_8UC3? 3 : 2, dims, type, strides, m.data, typeSize, 0, NULL); 
+	*o = PyArray_Copy((PyArrayObject*)tmp);
+	Py_DECREF(tmp);
+	return true;
+}
+
 } } //namespace pano_py

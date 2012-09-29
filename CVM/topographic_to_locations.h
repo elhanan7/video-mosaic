@@ -15,11 +15,13 @@ public:
 
 	TopographicToLocations(const boost::property_tree::ptree& ini);
 
-	void Process(const cv::Mat_<unsigned char>& topo, cv::Size tsize, IdealPolygonList& polygons);
+	void Process(const cv::Mat_<unsigned char>& topo,const cv::Mat_<float> dx, const cv::Mat_<float> dy ,cv::Size tsize, IdealPolygonList& polygons);
 
 private:
 
 	int m_holeFillingIterations;
+	bool m_precise;
+	float m_maxOverlap;
 };
 
 }
