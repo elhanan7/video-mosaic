@@ -1,4 +1,7 @@
 #pragma once
+#include "config.h"
+
+#ifdef USE_OSG
 #include <osg/Node>
 #include <cv.h>
 
@@ -15,3 +18,4 @@ public:
 };
 
 }
+#endif

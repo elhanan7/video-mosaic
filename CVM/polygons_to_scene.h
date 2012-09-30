@@ -1,5 +1,7 @@
 #pragma once
+#include "config.h"
 
+#ifdef USE_OSG
 #include <vector>
 #include <cv.h>
 
@@ -22,3 +24,4 @@ private:
 };
 
 }
+#endif

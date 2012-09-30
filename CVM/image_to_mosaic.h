@@ -1,4 +1,5 @@
 #pragma once
+#include "config.h"
 
 #include <cv.h>
 #include <boost/property_tree/ptree_fwd.hpp>
@@ -39,8 +40,10 @@ private:
 	TopographicToLocations m_topologicalToLocations;
 	IdealToCutPolygon m_idealToCutPolygon;
 	PovRayRenderer m_povRayRenderer;
+#ifdef USE_OSG
 	PolygonsToScene m_polygonsToScene;
 	SceneToImage m_sceneToImage;
+#endif
 	OpenCVRenderer m_opencvRenderer;
 	VoronoiRenderer m_voronoiRenderer;
 	IdealPolygonList m_lastPolygons;
