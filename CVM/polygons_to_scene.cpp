@@ -1,4 +1,7 @@
 #include "polygons_to_scene.h"
+#include "config.h"
+
+#ifdef USE_OSG
 
 #include <osg/Node>
 #include <osg/Geode>
@@ -70,3 +73,5 @@ osg::Node* PolygonsToScene::Process(const PolygonList& polygons)
 }
 
 }
+
+#endif

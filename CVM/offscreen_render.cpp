@@ -8,6 +8,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
+
+#include "config.h"
+
+#ifdef USE_OSG
+
 #include <Windows.h>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -668,3 +673,5 @@ void osr(osg::Node* scene, osgViewer::Viewer* viewer, unsigned int width, unsign
        
     }
 }
+
+#endif

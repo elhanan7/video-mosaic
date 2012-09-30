@@ -1,3 +1,7 @@
+#include "config.h"
+
+#ifdef USE_OSG
+
 #include <Windows.h>
 #include "scene_to_image.h"
 #include <osgViewer/Viewer>
@@ -66,3 +70,5 @@ void SceneToImage::Process(osg::Node* scene, cv::Size sz, cv::Mat& res)
 }
 
 }
+
+#endif

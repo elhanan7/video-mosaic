@@ -1,5 +1,7 @@
 #include "image_to_mosaic.h"
 
+#include "config.h"
+
 #include <boost/property_tree/ptree.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -62,7 +64,12 @@ namespace
 }
 
 ImageToMosaic::ImageToMosaic(const bpt::ptree& ini) :
-	m_guideLines(ini), m_topologicalMapMaker(ini), m_topologicalToLocations(ini), m_idealToCutPolygon(ini), m_povRayRenderer(ini), m_polygonsToScene(ini), m_sceneToImage(ini), m_opencvRenderer(ini), m_voronoiRenderer(ini)
+	m_guideLines(ini), m_topologicalMapMaker(ini), m_topologicalToLocations(ini), 
+	m_idealToCutPolygon(ini), m_povRayRenderer(ini), 
+#ifdef USE_OSG
+	m_polygonsToScene(ini), m_sceneToImage(ini), 
+#endif
+	m_opencvRenderer(ini), m_voronoiRenderer(ini)
 {
 	std::string tmp;
 	tmp = ini.get("ImageToMosaic.RenderImpl", "POV_RAY");
@@ -71,10 +78,12 @@ ImageToMosaic::ImageToMosaic(const bpt::ptree& ini) :
 	{
 		m_renderImpl = RENDER_POV_RAY;
 	}
+#ifdef USE_OSG
 	else if (tmp == "osg")
 	{
 		m_renderImpl = RENDER_OSG;
 	}
+#endif
 	else if (tmp == "opencv")
 	{
 		m_renderImpl = RENDER_OPENCV;
@@ -154,11 +163,13 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 	{
 		m_povRayRenderer.Process(cutPolys, frame.size(), fcolor);
 	}
+#ifdef USE_OSG
 	else if (m_renderImpl == RENDER_OSG)
 	{
 		osg::Node* scene = m_polygonsToScene.Process(cutPolys);
 		m_sceneToImage.Process(scene,cv::Size(frame.cols, frame.rows) ,fcolor);
 	}
+#endif
 	else if (m_renderImpl == RENDER_OPENCV)
 	{
 		m_opencvRenderer.Process(cutPolys, frame.size(), fcolor);
