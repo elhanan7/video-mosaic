@@ -12,15 +12,7 @@ LINK_DIRECTORIES(${CVM_BINARY_DIR}
 				 ${Motion_BINARY_DIR}
 				 ${Boost_LIBRARY_DIRS})
 				 
-IF (USE_OSG)
-   LINK_DIRECTORIES(${OSG_DIR}/lib)
-   
-ENDIF (USE_OSG)
-
-list (REMOVE_ITEM OpenCV_LIBS opencv_ts242d.lib)
-SET (MY_OPENCV_LIBS ${OpenCV_LIBS})
-
 ADD_EXECUTABLE(process_directory process_directory.cpp)
   
-TARGET_LINK_LIBRARIES(process_directory CVM Motion ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY} ${Boost_REGEX_LIBRARY} ${OSG_LIBS} ${MY_OPENCV_LIBS})
+TARGET_LINK_LIBRARIES(process_directory CVM Motion ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY} ${Boost_REGEX_LIBRARY} ${OpenCV_LIBS} ${OPENSCENEGRAPH_LIBRARIES})
 
