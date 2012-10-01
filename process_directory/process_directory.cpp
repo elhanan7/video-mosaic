@@ -13,10 +13,10 @@ int main()
 {
 	Mat_<cv::Vec3b> frame, fcolor;
 
-	videoMosaic::DirectorySource ds(".", "frame(\\d+)\\.png",0,0);
+	videoMosaic::DirectorySource ds(".", "frame(\\d+)\\.png",0,0, true);
 
 	boost::property_tree::ptree ini;
-	boost::property_tree::ini_parser::read_ini("C:\\Users\\elhanan7\\Programming\\CVM\\Data\\INI\\cvm.ini", ini);
+	boost::property_tree::ini_parser::read_ini("cvm.ini", ini);
 	videoMosaic::VideoToMosaic vtm(ini);
 	while (ds.HasNext())
 	{

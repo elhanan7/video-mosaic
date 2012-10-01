@@ -18,10 +18,10 @@ int main(int argc, char** argv)
 	Mat_<cv::Vec3b> frame, fcolor;
 
 	boost::property_tree::ptree ini;
-	boost::property_tree::ini_parser::read_ini("C:\\Users\\elhanan7\\Programming\\CVM\\Data\\INI\\cvm.ini", ini);
+	boost::property_tree::ini_parser::read_ini("cvm.ini", ini);
 	videoMosaic::ImageToMosaic itm(ini);
 	std::string inName = boost::filesystem::path(argv[1]).filename().string();
-	frame = cv::imread(inName);
+	frame = cv::imread(std::string(argv[1]));
 
 	std::cout << inName << std::endl;
 	std::string outName = "vm_" + inName;

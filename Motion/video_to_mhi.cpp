@@ -15,6 +15,7 @@ public:
 	void Give(const cv::Mat input);
 	cv::Mat_<float> Take();
 	void TakeSegmentation(std::vector<cv::Rect>& segmentation);
+	double TakeTimeStamp() { return m_currentFrame - 1;}
 
 private:
 	unsigned int m_bufferLength;
@@ -95,6 +96,11 @@ cv::Mat_<float> VideoToMHI::Take()
 void VideoToMHI::TakeSegmentation(std::vector<cv::Rect>& segmentation)
 {
 	m_pimpl->TakeSegmentation(segmentation);
+}
+
+double VideoToMHI::TakeTimeStamp()
+{
+	return m_pimpl->TakeTimeStamp();
 }
 
 }

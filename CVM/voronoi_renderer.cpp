@@ -2,6 +2,8 @@
 
 #include <boost/property_tree/ptree.hpp>
 
+#include <unordered_map>
+
 
 namespace videoMosaic {
 
@@ -49,14 +51,13 @@ void VoronoiRenderer::Process(const IdealPolygonList& polys, cv::Size sz, cv::Ma
 	cv::threshold(laplacian, laplacian, 0.01, 1, CV_THRESH_BINARY);
 	laplacian.convertTo(laplacianMask, laplacianMask.type());
 
-	std::map<int, int> lut;
+	std::unordered_map<int, int> lut;
 	cv::Mat_<cv::Vec3b> result = cv::Mat_<cv::Vec3b>::zeros(src.rows, src.cols);
 
 	int index = 0;
 	for (auto iter = polys.cbegin(); iter != polys.cend(); ++iter)
 	{
 		lut.insert(std::make_pair(labels(iter->center * m_sizeMultiplier), index));
-		//result(iter->center * m_sizeMultiplier) = polys[index].color;
 		index++;
 	}
 
@@ -65,7 +66,7 @@ void VoronoiRenderer::Process(const IdealPolygonList& polys, cv::Size sz, cv::Ma
 		for (int c = 0; c < result.cols; ++c)
 		{
 			cv::Point pt(c,r);
-			std::map<int, int>::const_iterator mapIter = lut.find(labels(pt));
+			std::unordered_map<int, int>::const_iterator mapIter = lut.find(labels(pt));
 			if (mapIter != lut.end())
 			{
 				result(pt) = polys[mapIter->second].color;

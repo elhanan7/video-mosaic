@@ -21,6 +21,7 @@ private:
 	boost::shared_ptr<ImageToMosaic> m_imageToMosaic;
 	boost::shared_ptr<VideoToMHI> m_vtm;
 	bool m_firstImage;
+	bool m_followMotionStrictly;
 	double m_motionExpansionFactor;
 
 };

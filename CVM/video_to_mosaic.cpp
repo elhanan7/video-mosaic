@@ -14,6 +14,7 @@ void VideoToMosaic::Reset()
 {
 	m_imageToMosaic = boost::shared_ptr<ImageToMosaic>(new ImageToMosaic(m_ini));
 	m_vtm = boost::shared_ptr<VideoToMHI>(new VideoToMHI(m_ini));
+	m_followMotionStrictly = m_ini.get("VideoToMosaic.FollowMotionStrictly", true);
 	m_motionExpansionFactor = m_ini.get("VideoToMosaic.MotionExpansionFactor", 1.5);
 	m_firstImage = true;
 }
@@ -33,7 +34,21 @@ void VideoToMosaic::ProcessNext(const cv::Mat_<cv::Vec3b> input, cv::Mat& output
 		cv::Rect rect = *iter;
 		cv::Size axes(m_motionExpansionFactor*rect.width, m_motionExpansionFactor*rect.height);
 		cv::Point center(rect.x + 0.5*rect.width, rect.y + 0.5*rect.height);
-		cv::ellipse(motionMask, center, axes,0 ,0, 360,cv::Scalar(1),-1);
+		if (m_followMotionStrictly)
+		{
+			cv::Mat mhiROI, motionMaskROI;
+			mhiROI = mhi(rect);
+			motionMaskROI = motionMask(rect);
+			cv::Mat currentMotion, currentMotionUC;
+			cv::threshold(mhiROI, currentMotion, m_vtm->TakeTimeStamp() - 10, 1, cv::THRESH_BINARY);
+			currentMotion.convertTo(currentMotionUC, CV_8U);
+			cv::dilate(currentMotionUC, currentMotionUC, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(10,10)));
+			currentMotionUC.copyTo(motionMaskROI);
+		}
+		else
+		{
+			cv::ellipse(motionMask, center, axes,0 ,0, 360,cv::Scalar(1),-1);
+		}
 	}
 	if (!m_firstImage)
 	{

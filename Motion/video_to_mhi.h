@@ -16,6 +16,7 @@ public:
 	void Give(const cv::Mat input);
 	cv::Mat_<float> Take();
 	void TakeSegmentation(std::vector<cv::Rect>& segmentation);
+	double TakeTimeStamp();
 
 private:
 	boost::shared_ptr<VideoToMHIImpl> m_pimpl;
