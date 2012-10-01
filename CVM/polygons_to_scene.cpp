@@ -31,11 +31,11 @@ osg::Node* PolygonsToScene::Process(const PolygonList& polygons)
 
 	for (size_t i = 0; i < polygons.size(); ++i)
 	{
-		size_t n = polygons[i].polygon.size();
-		cv::Vec3b color = polygons[i].ideal.color;
+		size_t n = polygons[i].vertices.size();
+		cv::Vec3b color = polygons[i].color;
 		osg::Vec4 clr = osg::Vec4(color[2] / 155.0f, color[1] / 155.0f, color[0] / 155.0f, 1.0f);
 		for (size_t j = 0; j < n; ++j) colors->push_back(clr);
-		std::transform(polygons[i].polygon.begin(), polygons[i].polygon.end(), std::back_inserter(*vertices), 
+		std::transform(polygons[i].vertices.begin(), polygons[i].vertices.end(), std::back_inserter(*vertices), 
 			[](const cv::Point2d& pt) -> osg::Vec3
 		{
 			return osg::Vec3(pt.x, pt.y, 0);

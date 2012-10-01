@@ -13,7 +13,7 @@ namespace videoMosaic {
 
 namespace
 {
-	cv::Size ProcessTileSize(const bpt::ptree& ini, const cv::Size defval)
+	cv::Size2f ProcessTileSize(const bpt::ptree& ini, const cv::Size2f defval)
 	{
 		std::string value = ini.get("ImageToMosaic.TileSize", "");
 		if (value == "")
@@ -29,21 +29,21 @@ namespace
 		}
 		else if (tokens.size() == 1)
 		{
-			int size = boost::lexical_cast<int>(tokens[0]);
-			return cv::Size(size,size);
+			float size = boost::lexical_cast<float>(tokens[0]);
+			return cv::Size2f(size,size);
 		}
 		else
 		{
-			int sizex = boost::lexical_cast<int>(tokens[0]);
-			int sizey = boost::lexical_cast<int>(tokens[1]);
-			return cv::Size(sizex,sizey);
+			float sizex = boost::lexical_cast<float>(tokens[0]);
+			float sizey = boost::lexical_cast<float>(tokens[1]);
+			return cv::Size2f(sizex,sizey);
 		}
 	}
 
-	void JoinPolygonsWithMask(const IdealPolygonList& oldPolys,
-							  const IdealPolygonList& newPolys,
+	void JoinPolygonsWithMask(const PolygonList& oldPolys,
+							  const PolygonList& newPolys,
 							  const cv::Mat_<unsigned char> mask,
-							  IdealPolygonList& result)
+							  PolygonList& result)
 	{
 		for (auto iter = oldPolys.cbegin(); iter != oldPolys.cend(); ++iter)
 		{
@@ -65,7 +65,7 @@ namespace
 
 ImageToMosaic::ImageToMosaic(const bpt::ptree& ini) :
 	m_guideLines(ini), m_topologicalMapMaker(ini), m_topologicalToLocations(ini), 
-	m_idealToCutPolygon(ini), m_povRayRenderer(ini), 
+	m_povRayRenderer(ini), 
 #ifdef USE_OSG
 	m_polygonsToScene(ini), m_sceneToImage(ini), 
 #endif
@@ -99,7 +99,7 @@ ImageToMosaic::ImageToMosaic(const bpt::ptree& ini) :
 	m_saveTopographic = ini.get("ImageToMosaic.SaveTopographic", true);
 	m_maskTileLocationsWithMotion = ini.get("ImageToMosaic.MaskTileLocationsWithMotion", false);
 	m_maskGuideLinesWithMotion = ini.get("ImageToMosaic.MaskGuideLinesWithMotion", true);
-	m_tsize = ProcessTileSize(ini, cv::Size(4,4));
+	m_tsize = ProcessTileSize(ini, cv::Size2f(4,4));
 	m_recolorize = ini.get("ImageToMosaic.RecolorizeOnEachFrame", true);
 }
 
@@ -121,7 +121,7 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 	m_lastGL = edges.clone();
 	cv::Mat_<float> dx,dy;
 	m_topologicalMapMaker.Process(edges, edges, m_tsize, dx, dy);
-	IdealPolygonList currentPolygons, polygons;
+	PolygonList currentPolygons, polygons;
 	m_topologicalToLocations.Process(edges, dx, dy, m_tsize, currentPolygons);
 	
 	for (auto iter = currentPolygons.begin(); iter != currentPolygons.end(); ++iter)
@@ -156,23 +156,20 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 		return;
 	}
 	
-	PolygonList cutPolys;
-
-	m_idealToCutPolygon.Process(polygons, m_tsize, frame.size(), cutPolys);
 	if (m_renderImpl == RENDER_POV_RAY)
 	{
-		m_povRayRenderer.Process(cutPolys, frame.size(), fcolor);
+		m_povRayRenderer.Process(polygons, frame.size(), fcolor);
 	}
 #ifdef USE_OSG
 	else if (m_renderImpl == RENDER_OSG)
 	{
-		osg::Node* scene = m_polygonsToScene.Process(cutPolys);
+		osg::Node* scene = m_polygonsToScene.Process(polygons);
 		m_sceneToImage.Process(scene,cv::Size(frame.cols, frame.rows) ,fcolor);
 	}
 #endif
 	else if (m_renderImpl == RENDER_OPENCV)
 	{
-		m_opencvRenderer.Process(cutPolys, frame.size(), fcolor);
+		m_opencvRenderer.Process(polygons, frame.size(), fcolor);
 	}
 
 	output = fcolor;

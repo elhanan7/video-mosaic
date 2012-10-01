@@ -23,8 +23,8 @@ void OpenCVRenderer::Process(const PolygonList& polygons, cv::Size sz, cv::Mat& 
 	for (auto iter = polygons.cbegin(); iter != polygons.cend(); ++iter)
 	{
 		std::vector<cv::Point2i> fixedVec;
-		std::transform(iter->polygon.cbegin(), iter->polygon.cend(), std::back_inserter(fixedVec), fixCoord);
-		cv::Vec3b color = iter->ideal.color;
+		std::transform(iter->vertices.cbegin(), iter->vertices.cend(), std::back_inserter(fixedVec), fixCoord);
+		cv::Vec3b color = iter->color;
 
 		cv::fillConvexPoly(result, fixedVec, cv::Scalar(color));
 		if (m_drawOutline)

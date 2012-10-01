@@ -37,7 +37,7 @@ namespace
 		return sts.str();
 	}
 
-	std::string SerializePolygon(cv::Size sz, 
+	std::string SerializePolygon(cv::Size2f sz, 
 		                         const std::vector<cv::Point2d>& p, 
 								 cv::Vec3b color,
 								 float height = 2.0f)
@@ -96,7 +96,7 @@ void PovRayRenderer::Process(const PolygonList& polygons, cv::Size sz, cv::Mat& 
 
 	for (auto iter = polygons.cbegin(); iter != polygons.cend(); ++iter)
 	{
-		file << SerializePolygon(sz, iter->polygon, iter->ideal.color, m_tileHeight);
+		file << SerializePolygon(sz, iter->vertices, iter->color, m_tileHeight);
 	}
 	file.close();
 	std::stringstream cmdStream;

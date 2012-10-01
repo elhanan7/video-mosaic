@@ -14,6 +14,6 @@ class IdealToCutPolygon
 public:
 	IdealToCutPolygon(const boost::property_tree::ptree& ini);
 
-	void Process(const IdealPolygonList& ideal, const cv::Size& tsize, const cv::Size& imsize, PolygonList& polygons);
+	void Process(const PolygonList& ideal, const cv::Size2f& tsize, const cv::Size& imsize, PolygonList& polygons);
 };
 }

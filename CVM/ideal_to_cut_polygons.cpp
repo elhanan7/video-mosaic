@@ -24,7 +24,7 @@ namespace
 										static_cast<ClipperLib::long64>(pt.y * ((ClipperLib::long64)1 << 50)));
 	}
 
-	ClipperLib::Polygon CreatePolygon(const IdealPolygon& ideal)
+	ClipperLib::Polygon CreatePolygon(const Polygon& ideal)
 	{
 		ClipperLib::Polygon poly;
 		std::vector<cv::Point2d> temp;
@@ -46,9 +46,9 @@ IdealToCutPolygon::IdealToCutPolygon(const bpt::ptree&)
 {
 }
 
-void IdealToCutPolygon::Process(const IdealPolygonList& ideal, const cv::Size& tsize, const cv::Size& imsize, PolygonList& polygons)
+void IdealToCutPolygon::Process(const PolygonList& ideal, const cv::Size2f& tsize, const cv::Size& imsize, PolygonList& polygons)
 {
-	LocatorGrid grid(imsize, std::max(tsize.width, tsize.height));
+	LocatorGrid grid(imsize, static_cast<int>(std::max(tsize.width, tsize.height)));
 	for (size_t i = 0; i < ideal.size(); ++i)
 	{
 		grid.Add(ideal[i].center, i);
@@ -92,9 +92,10 @@ void IdealToCutPolygon::Process(const IdealPolygonList& ideal, const cv::Size& t
 	polygons.resize(clipperResult.size());
 	for (size_t i = 0; i < clipperResult.size(); ++i)
 	{
-		polygons[i].ideal = ideal[idealIndexes[i]];
+		polygons[i] = ideal[idealIndexes[i]];
+		polygons[i].vertices.clear();
 		std::transform(clipperResult[i].outer.begin(), clipperResult[i].outer.end(), 
-			std::back_inserter(polygons[i].polygon), &ToCv);
+			std::back_inserter(polygons[i].vertices), &ToCv);
 	}
 
 	

@@ -38,7 +38,6 @@ private:
 	GuideLines m_guideLines;
 	TopologicalMapMaker m_topologicalMapMaker;
 	TopographicToLocations m_topologicalToLocations;
-	IdealToCutPolygon m_idealToCutPolygon;
 	PovRayRenderer m_povRayRenderer;
 #ifdef USE_OSG
 	PolygonsToScene m_polygonsToScene;
@@ -46,12 +45,12 @@ private:
 #endif
 	OpenCVRenderer m_opencvRenderer;
 	VoronoiRenderer m_voronoiRenderer;
-	IdealPolygonList m_lastPolygons;
+	PolygonList m_lastPolygons;
 	cv::Mat_<unsigned char> m_lastGL;
 	bool m_maskTileLocationsWithMotion;
 	bool m_maskGuideLinesWithMotion;
 	bool m_recolorize;
-	cv::Size m_tsize;
+	cv::Size2f m_tsize;
 };
 
 }

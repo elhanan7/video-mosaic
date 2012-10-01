@@ -6,25 +6,16 @@
 
 namespace videoMosaic {
 
-	struct IdealPolygon
-	{
-		cv::Point center;
-		float     orientation;
-		cv::Vec3b color;
-		cv::Size tileSize;
-	};
-
-	typedef std::vector<IdealPolygon> IdealPolygonList;
-
 	struct Polygon
 	{
-		std::vector<cv::Point2d> polygon;
-		IdealPolygon             ideal;
+		std::vector<cv::Point2d> vertices;
+		cv::Point2d center;
+		float     orientation;
+		cv::Vec3b color;
+		cv::Size2f tileSize;
 	};
 
 	typedef std::vector<Polygon> PolygonList;
-
-	typedef std::vector<IdealPolygon> IdealPolygonList;
 
 	inline cv::Point clamp(cv::Point pt, cv::Size sz)
 	{

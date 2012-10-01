@@ -7,32 +7,12 @@
 
 namespace videoMosaic {
 
-namespace
-{
-	void FillNeighbourVector(cv::Point center, cv::Size sz, std::vector<cv::Point>& result)
-	{
-		for (int r = -1; r <= 1; ++r)
-		{
-			for (int c = -1; c <= 1; ++c)
-			{
-				//if (r * c == 0) continue;
-				cv::Point pt(center.x + c, center.y + r);
-				if (pt.x >= sz.width || pt.y >= sz.height || pt.x < 0 || pt.y < 0)
-				{
-					continue;
-				}
-				result.push_back(pt);
-			}
-		}
-	}
-
-}
 VoronoiRenderer::VoronoiRenderer(const boost::property_tree::ptree& ini)
 {
 	m_sizeMultiplier = ini.get("VoronoiRenderer.SizeMultiplier", 2);
 }
 
-void VoronoiRenderer::Process(const IdealPolygonList& polys, cv::Size sz, cv::Mat& output)
+void VoronoiRenderer::Process(const PolygonList& polys, cv::Size sz, cv::Mat& output)
 {
 	cv::Mat_<unsigned char> src = cv::Mat_<unsigned char>::ones(sz * m_sizeMultiplier);
 	cv::Mat_<float> dst(src.rows, src.cols);
