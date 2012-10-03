@@ -55,10 +55,7 @@ void DoLocations(const PointSource& ps, Traits& traits, PolygonList& polygons)
 	for (; iter != ps.End(); ++iter)
 	{
 		PolygonType polygon = traits.GetPolygon(*iter);
-		if (traits.CheckUpdate(polygon))
-		{
-			polygons.push_back(polygon);
-		}
+		traits.CheckUpdate(polygon, polygons);
 	}
 }
 

@@ -33,6 +33,26 @@ namespace videoMosaic
 			return poly;
 		}
 
+		cv::Point2d FindCenter(const Polygon& poly)
+		{
+			cv::Point2d sum(0,0);
+			for (auto iter = poly.vertices.cbegin(); iter != poly.vertices.cend(); ++iter)
+			{
+				sum += *iter;
+			}
+			sum = sum * (1/static_cast<double>(poly.vertices.size()));
+			return sum;
+		}
+
+		void ShrinkPolygon(Polygon& poly, double factor)
+		{
+			cv::Point2d center = FindCenter(poly);
+			transformations::Shift bringToOrigin(-center.x, -center.y);
+			transformations::Scale scale(factor);
+			transformations::Shift backToPlace(center.x, center.y);
+			std::transform(poly.vertices.begin(), poly.vertices.end(), poly.vertices.begin(), backToPlace*scale*bringToOrigin);
+		}
+
 
 
 	}

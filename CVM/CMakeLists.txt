@@ -27,7 +27,9 @@ SET(CVM_HDRS
 	utils.h
 	video_source.h
 	video_to_mosaic.h
-	voronoi_renderer.h)
+	voronoi_renderer.h
+	approximate_tile_placer.h
+	precise_tile_placer.h)
 	
 SET(CVM_SRCS
 	clipper.cpp

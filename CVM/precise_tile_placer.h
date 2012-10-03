@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utils.h"
+#include "polygon_utils.h"
 
 namespace videoMosaic
 {
@@ -33,11 +33,17 @@ namespace videoMosaic
 			transformations::Shift shift(poly.center.x ,poly.center.y);
 			transformations::Rotate rot(poly.orientation);
 			std::transform(poly.vertices.begin(), poly.vertices.end(), poly.vertices.begin(), shift*rot);
+			poly.center = pt;
 			return poly;
 		}
 
-		bool CheckUpdate(const PolygonType& poly)
+		void CheckUpdate(PolygonType& poly, PolygonList& polygons)
 		{
+			if ((lastPt - cv::Point(poly.center)).dot(lastPt - cv::Point(poly.center)) < (tSize.width*tSize.width)/4 )
+			{
+				return;
+			}
+
 			singlePolyMask.create(imSize);
 			singlePolyMask.setTo(0);
 			std::vector<cv::Point2i> intVec;
@@ -50,19 +56,33 @@ namespace videoMosaic
 			cv::Rect roi(poly.center - cv::Point2d(tSize.width, tSize.height), tSize * 2.0f);
 			cv::Rect fullRoi(cv::Point(0,0), imSize);
 			roi = roi & fullRoi;
-			cv::Mat_<unsigned char> maskRoi, singlePolyRoi, roiResult;
+			cv::Mat_<unsigned char> maskRoi, singlePolyRoi, roiResult, cutPolygon;
 			maskRoi = mask(roi);
 			singlePolyRoi = singlePolyMask(roi);
+			singlePolyRoi.copyTo(cutPolygon, 255 - maskRoi);
 			cv::bitwise_and(maskRoi, singlePolyRoi, roiResult);
 			int n = cv::saturate_cast<int>(cv::sum(roiResult)[0] / 255);
 			float percent = (float) n / roi.area();
 
 			if (percent > maxPercent)
 			{
-				return false;
+				return;
 			}
 			cv::bitwise_or(maskRoi, singlePolyRoi, maskRoi);
-			return true;
+			std::vector<std::vector<cv::Point>> contours;
+			cv::findContours(cutPolygon, contours, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+			for (auto iter = contours.cbegin(); iter != contours.cend(); ++iter)
+			{
+				if (iter->size() >= 3)
+				{
+					poly.vertices.clear();
+					std::transform(iter->cbegin(), iter->cend(), std::back_inserter(poly.vertices), transformations::Shift(roi.tl().x, roi.tl().y));
+					utils::ShrinkPolygon(poly, 0.9);
+					poly.center = utils::FindCenter(poly);
+					polygons.push_back(poly);
+					lastPt = poly.center;
+				}
+			}
 		}
 
 		void SetTileSize(cv::Size2f tsz)  {tSize = tsz;}
@@ -74,7 +94,7 @@ namespace videoMosaic
 
 		static bool NeedsClipping()
 		{
-			return true;
+			return false;
 		}
 
 		cv::Size imSize;
@@ -83,5 +103,6 @@ namespace videoMosaic
 		float maxPercent;
 		cv::Mat_<unsigned char> mask, singlePolyMask;
 		cv::Point2f half, ones;
+		cv::Point lastPt;
 	};
 }

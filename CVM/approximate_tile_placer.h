@@ -24,7 +24,7 @@ namespace videoMosaic
 
 		void SetTileSize(cv::Size2f tsz)  {tSize = tsz;}
 
-		bool CheckUpdate(const Polygon& poly)
+		void CheckUpdate(const Polygon& poly, PolygonList& polygons)
 		{
 			cv::Point pt = poly.center;
 			cv::Point tl = pt - half + ones;
@@ -33,11 +33,11 @@ namespace videoMosaic
 			br = clamp(br, imSize);
 			if (cv::sum(mask(cv::Rect(tl, br)))[0] > 0) 
 			{
-				return false;
+				return;
 			}
 
 			mask(pt) = 255;
-			return true;
+			polygons.push_back(poly);
 		}
 
 		cv::Mat_<unsigned char> GetMask()

@@ -7,7 +7,7 @@ SET (OSG_DIR "NOTFOUND" CACHE PATH "Location of OSG Tree")
 ENDIF(USE_OSG)
 
 SET (BOOST_ROOT "NOTFOUND" CACHE PATH "Location of Boost Tree")
-FIND_PACKAGE( Boost 1.40 COMPONENTS regex system filesystem REQUIRED )
+FIND_PACKAGE( Boost 1.40 COMPONENTS regex system filesystem REQUIRED python)
 FIND_PACKAGE( OpenCV REQUIRED )
 
 IF (USE_OSG)
@@ -33,4 +33,5 @@ ADD_SUBDIRECTORY(Motion)
 ADD_SUBDIRECTORY(CVM)
 ADD_SUBDIRECTORY(process_file)
 ADD_SUBDIRECTORY(process_directory)
+ADD_SUBDIRECTORY(python_video_mosaic)
 
