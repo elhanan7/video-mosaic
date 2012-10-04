@@ -9,12 +9,12 @@ namespace videoMosaic
 	namespace utils 
 	{
 		
-		float GetOrientation(float dx, float dy)
+		inline float GetOrientation(float dx, float dy)
 		{
 			return atan2(dy, dx);
 		}
 
-		Polygon CreateSimplePolygon(cv::Point2d center, float orientation, cv::Size2f tsize)
+		inline Polygon CreateSimplePolygon(cv::Point2d center, float orientation, cv::Size2f tsize)
 		{
 			Polygon poly;
 			poly.center = center;
@@ -33,7 +33,7 @@ namespace videoMosaic
 			return poly;
 		}
 
-		cv::Point2d FindCenter(const Polygon& poly)
+		inline cv::Point2d FindCenter(const Polygon& poly)
 		{
 			cv::Point2d sum(0,0);
 			for (auto iter = poly.vertices.cbegin(); iter != poly.vertices.cend(); ++iter)
@@ -44,7 +44,7 @@ namespace videoMosaic
 			return sum;
 		}
 
-		void ShrinkPolygon(Polygon& poly, double factor)
+		inline void ScalePolygon(Polygon& poly, double factor)
 		{
 			cv::Point2d center = FindCenter(poly);
 			transformations::Shift bringToOrigin(-center.x, -center.y);

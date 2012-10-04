@@ -13,7 +13,7 @@ int main()
 {
 	Mat_<cv::Vec3b> frame, fcolor;
 
-	videoMosaic::DirectorySource ds(".", "frame(\\d+)\\.png",0,0, true);
+	videoMosaic::DirectorySource ds(".", "frame(\\d+)\\.png",0,0);
 
 	boost::property_tree::ptree ini;
 	boost::property_tree::ini_parser::read_ini("cvm.ini", ini);

@@ -1,4 +1,5 @@
 #include "opencv_renderer.h"
+#include "polygon_utils.h"
 
 #include <boost/property_tree/ptree.hpp>
 
@@ -23,7 +24,9 @@ void OpenCVRenderer::Process(const PolygonList& polygons, cv::Size sz, cv::Mat& 
 	for (auto iter = polygons.cbegin(); iter != polygons.cend(); ++iter)
 	{
 		std::vector<cv::Point2i> fixedVec;
-		std::transform(iter->vertices.cbegin(), iter->vertices.cend(), std::back_inserter(fixedVec), fixCoord);
+		Polygon enlargedPoly = *iter;;
+		utils::ScalePolygon(enlargedPoly, 1.0 / (0.9));
+		std::transform(enlargedPoly.vertices.cbegin(), enlargedPoly.vertices.cend(), std::back_inserter(fixedVec), fixCoord);
 		cv::Vec3b color = iter->color;
 
 		cv::fillConvexPoly(result, fixedVec, cv::Scalar(color));

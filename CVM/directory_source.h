@@ -8,7 +8,7 @@ namespace videoMosaic {
 class DirectorySource : public VideoSource
 {
 public:
-	DirectorySource(std::string path, std::string pattern, int startIndex, int stopIndex, bool reverse = false);
+	DirectorySource(const std::string& path, const std::string& pattern, int startIndex, int stopIndex, bool reverse = false);
 
 	virtual cv::Mat Next();
 	virtual bool HasNext() const;

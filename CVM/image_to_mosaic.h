@@ -47,6 +47,7 @@ private:
 	VoronoiRenderer m_voronoiRenderer;
 	PolygonList m_lastPolygons;
 	cv::Mat_<unsigned char> m_lastGL;
+	cv::Mat_<unsigned char> m_lastTileMask;
 	bool m_maskTileLocationsWithMotion;
 	bool m_maskGuideLinesWithMotion;
 	bool m_recolorize;

@@ -28,14 +28,12 @@ BOOST_PYTHON_MODULE(video_mosaic)
 {
 	boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
 
-	class_<VideoMosaicParameters>("Parameters", init<std::string>())
+	class_<PythonImageToMosaic>("ImageToMosaic", init<const std::string&>())
 		.def(init<>())
-		.def("Get", &VideoMosaicParameters::Get)
-		.def("Set", &VideoMosaicParameters::Set);
-
-	class_<PythonImageToMosaic>("ImageToMosaic", init<const VideoMosaicParameters&>())
-		.def(init<>())
-		.def("ProcessFile", &PythonImageToMosaic::ProcessFile);
+		.def("ProcessFile", &PythonImageToMosaic::ProcessFile)
+		.def("Process", &PythonImageToMosaic::Process)
+		.def("GetParam", &PythonImageToMosaic::GetParam)
+		.def("SetParam", &PythonImageToMosaic::SetParam);
 
 
 	def("Test", &TestArray);

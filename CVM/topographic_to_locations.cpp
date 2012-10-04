@@ -128,7 +128,7 @@ void TopographicToLocations::ProcessInternal(Traits& traits, const cv::Mat_<unsi
 
 	DoLocations(contourSource, traits, polygons);
 
-	cv::Size2f currentSize = tsize - cv::Size2f(1,1);
+	cv::Size2f currentSize = tsize;
 	int minCounter = std::min(std::min(this->m_holeFillingIterations, static_cast<int>(tsize.width) - 2), 
 		                                 static_cast<int>(tsize.height) - 2);
 	for (int counter = 0; counter < minCounter; ++counter) 
@@ -147,16 +147,21 @@ void TopographicToLocations::ProcessInternal(Traits& traits, const cv::Mat_<unsi
 	}
 }
 
-void TopographicToLocations::Process(const cv::Mat_<unsigned char>& topo,const cv::Mat_<float> dx, const cv::Mat_<float> dy ,cv::Size2f tsize, PolygonList& polygons)
+void TopographicToLocations::Process(const cv::Mat_<unsigned char>& topo,
+									 const cv::Mat_<float> dx, 
+									 const cv::Mat_<float> dy,
+									 cv::Size2f tsize, 
+									 cv::Mat_<unsigned char> tilesMask,
+									 PolygonList& polygons)
 {
 	if (m_precise)
 	{
-		PrecisePlacerTraits precise(dx, dy, tsize, m_maxOverlap);
+		PrecisePlacerTraits precise(dx, dy, tilesMask, tsize, m_maxOverlap);
 		ProcessInternal(precise, topo, tsize, polygons);
 	}
 	else
 	{
-		ApproximatePlacerTraits approx(topo.size(), tsize, dx, dy);
+		ApproximatePlacerTraits approx(topo.size(), tilesMask, tsize, dx, dy);
 		ProcessInternal(approx, topo, tsize, polygons);
 	}
 }

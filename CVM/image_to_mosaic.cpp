@@ -42,12 +42,13 @@ namespace
 
 	void JoinPolygonsWithMask(const PolygonList& oldPolys,
 							  const PolygonList& newPolys,
-							  const cv::Mat_<unsigned char> mask,
+							  const cv::Mat_<unsigned char> motionMask,
+							  const cv::Mat_<unsigned char> tilesMask,
 							  PolygonList& result)
 	{
 		for (auto iter = oldPolys.cbegin(); iter != oldPolys.cend(); ++iter)
 		{
-			if (!mask(iter->center))
+			if (!motionMask(iter->center))
 			{
 				result.push_back(*iter);
 			}
@@ -55,9 +56,21 @@ namespace
 
 		for (auto iter = newPolys.cbegin(); iter != newPolys.cend(); ++iter)
 		{
-			if (mask(iter->center))
+			result.push_back(*iter);
+		}
+	}
+
+	void FixTileMask(const PolygonList& oldPolys,
+					 const cv::Mat_<unsigned char> motionMask,
+					 const cv::Mat_<unsigned char> tilesMask)
+	{
+		for (auto iter = oldPolys.cbegin(); iter != oldPolys.cend(); ++iter)
+		{
+			if (motionMask(iter->center))
 			{
-				result.push_back(*iter);
+				std::vector<cv::Point> intPoly;
+				std::transform(iter->vertices.cbegin(), iter->vertices.cend(), std::back_inserter(intPoly), utils::ToIntPoint);
+				cv::fillConvexPoly(tilesMask, intPoly, 0);
 			}
 		}
 	}
@@ -122,7 +135,17 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 	cv::Mat_<float> dx,dy;
 	m_topologicalMapMaker.Process(edges, edges, m_tsize, dx, dy);
 	PolygonList currentPolygons, polygons;
-	m_topologicalToLocations.Process(edges, dx, dy, m_tsize, currentPolygons);
+	if (m_maskTileLocationsWithMotion &&  !motionMask.empty())
+	{
+		m_lastTileMask.setTo(0, motionMask);
+		FixTileMask(m_lastPolygons, motionMask, m_lastTileMask);
+	}
+	else
+	{
+		m_lastTileMask.create(input.size());
+		m_lastTileMask.setTo(0);
+	}
+	m_topologicalToLocations.Process(edges, dx, dy, m_tsize, m_lastTileMask, currentPolygons);
 	
 	for (auto iter = currentPolygons.begin(); iter != currentPolygons.end(); ++iter)
 	{
@@ -132,7 +155,7 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 	
 	if (m_maskTileLocationsWithMotion &&  !motionMask.empty())
 	{
-		JoinPolygonsWithMask(m_lastPolygons, currentPolygons, motionMask, polygons);
+		JoinPolygonsWithMask(m_lastPolygons, currentPolygons, motionMask, m_lastTileMask, polygons);
 	}
 	else
 	{

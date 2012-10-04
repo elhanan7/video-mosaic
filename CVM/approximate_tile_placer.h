@@ -6,11 +6,10 @@ namespace videoMosaic
 {
 	struct ApproximatePlacerTraits
 	{
-		ApproximatePlacerTraits(cv::Size imsz, cv::Size2f tsz, cv::Mat dxx, cv::Mat dyy) : 
-			imSize(imsz), tSize(tsz) , dx(dxx), dy(dyy)
+		ApproximatePlacerTraits(cv::Size imsz, cv::Mat_<unsigned char> tileMask, cv::Size2f tsz, cv::Mat dxx, cv::Mat dyy) : 
+			imSize(imsz), tSize(tsz), mask(tileMask) , dx(dxx), dy(dyy)
 		{
-			mask = cv::Mat_<unsigned char>::zeros(imSize);
-			half = cv::Point(tSize.width - 1, tSize.height - 1);
+			half = cv::Point(cv::saturate_cast<int>(tSize.width - 1), cv::saturate_cast<int>(tSize.height - 1));
 			ones = cv::Point(1,1);
 		};
 

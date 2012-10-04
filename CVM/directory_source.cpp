@@ -9,7 +9,7 @@ namespace bfs = boost::filesystem;
 
 namespace videoMosaic {
 
-DirectorySource::DirectorySource(std::string path, std::string pattern, int startIndex, int stopIndex, bool reverse)
+DirectorySource::DirectorySource(const std::string& path, const std::string& pattern, int startIndex, int stopIndex, bool reverse)
 {
 	boost::regex re(pattern);
 	bfs::directory_iterator endIter;

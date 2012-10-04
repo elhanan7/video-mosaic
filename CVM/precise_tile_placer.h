@@ -6,10 +6,9 @@ namespace videoMosaic
 {
 	struct PrecisePlacerTraits
 	{
-		PrecisePlacerTraits(cv::Mat_<float> dxx, cv::Mat_<float> dyy, cv::Size2f tsz, float maxAreaPercent) : imSize(dxx.size()), tSize(tsz), dx(dxx), dy(dyy),
+		PrecisePlacerTraits(cv::Mat_<float> dxx, cv::Mat_<float> dyy, cv::Mat_<unsigned char> tileMask, cv::Size2f tsz, float maxAreaPercent) : imSize(dxx.size()), tSize(tsz), dx(dxx), dy(dyy), mask(tileMask),
 			maxPercent(maxAreaPercent)
 		{
-			mask = cv::Mat_<unsigned char>::zeros(imSize);
 			half = cv::Point2f(tSize.width - 1, tSize.height - 1);
 			ones = cv::Point2f(1,1);
 		};
@@ -39,7 +38,11 @@ namespace videoMosaic
 
 		void CheckUpdate(PolygonType& poly, PolygonList& polygons)
 		{
-			if ((lastPt - cv::Point(poly.center)).dot(lastPt - cv::Point(poly.center)) < (tSize.width*tSize.width)/4 )
+			if ((lastPt - utils::ToIntPoint(poly.center)).dot(lastPt - utils::ToIntPoint(poly.center)) < (tSize.width*tSize.width)/4 )
+			{
+				return;
+			}
+			if (mask(utils::ToIntPoint(poly.center)) != 0)
 			{
 				return;
 			}
@@ -56,7 +59,7 @@ namespace videoMosaic
 			cv::Rect roi(poly.center - cv::Point2d(tSize.width, tSize.height), tSize * 2.0f);
 			cv::Rect fullRoi(cv::Point(0,0), imSize);
 			roi = roi & fullRoi;
-			cv::Mat_<unsigned char> maskRoi, singlePolyRoi, roiResult, cutPolygon;
+			cv::Mat_<unsigned char> maskRoi, singlePolyRoi, roiResult, cutPolygon, topoAndMask;
 			maskRoi = mask(roi);
 			singlePolyRoi = singlePolyMask(roi);
 			singlePolyRoi.copyTo(cutPolygon, 255 - maskRoi);
@@ -77,7 +80,7 @@ namespace videoMosaic
 				{
 					poly.vertices.clear();
 					std::transform(iter->cbegin(), iter->cend(), std::back_inserter(poly.vertices), transformations::Shift(roi.tl().x, roi.tl().y));
-					utils::ShrinkPolygon(poly, 0.9);
+					utils::ScalePolygon(poly, 0.9);
 					poly.center = utils::FindCenter(poly);
 					polygons.push_back(poly);
 					lastPt = poly.center;

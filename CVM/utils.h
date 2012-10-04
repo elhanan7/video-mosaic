@@ -24,5 +24,12 @@ namespace videoMosaic {
 		return cv::Point(rx, ry);
 	}
 
+	namespace utils {
+	inline cv::Point ToIntPoint(cv::Point2d pt)
+	{
+		return cv::Point(cv::saturate_cast<int>(pt.x), cv::saturate_cast<int>(pt.y));
+	}
+	}
+
 }
 

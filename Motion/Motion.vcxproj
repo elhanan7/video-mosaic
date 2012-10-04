@@ -130,10 +130,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="global_motion_estimator.h" />
     <ClInclude Include="images_to_mask.h" />
     <ClInclude Include="video_to_mhi.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="global_motion_estimator.cpp" />
     <ClCompile Include="images_to_mask.cpp" />
     <ClCompile Include="video_to_mhi.cpp" />
   </ItemGroup>

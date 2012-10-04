@@ -21,12 +21,18 @@
     <ClInclude Include="video_to_mhi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="global_motion_estimator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="images_to_mask.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="video_to_mhi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="global_motion_estimator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
