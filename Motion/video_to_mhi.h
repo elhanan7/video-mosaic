@@ -13,8 +13,9 @@ class VideoToMHI
 public:
 	VideoToMHI(const boost::property_tree::ptree& ini);
 
-	void Give(const cv::Mat input);
+	void Give(const cv::Mat input, bool globalMotion = false);
 	cv::Mat_<float> Take();
+	bool TakeGlobalTrans(cv::Mat& trans);
 	void TakeSegmentation(std::vector<cv::Rect>& segmentation);
 	double TakeTimeStamp();
 

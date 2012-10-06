@@ -9,7 +9,10 @@
 
 namespace bpt = boost::property_tree;
 
-void osr(osg::Node* scene, osgViewer::Viewer* viewer, unsigned int width, unsigned int height, cv::Mat* cvmat);
+//void osr(osg::Node* scene, osgViewer::Viewer* viewer, unsigned int width, unsigned int height, cv::Mat* cvmat);
+
+void 
+renderSceneToImage(::osgViewer::Viewer* viewer, const ::std::string& sFileName_, int width, int height);
 
 namespace videoMosaic {
 
@@ -50,23 +53,15 @@ void SceneToImage::Process(osg::Node* scene, cv::Size sz, cv::Mat& res)
 	grp->addChild(scene);
 	//grp->addChild(camera);
 	scene->getOrCreateStateSet()->setAttributeAndModes(light, osg::StateAttribute::ON);
-	osr(grp, &viewer, sz.width, sz.height, &res);
-	cv::Mat temp(0, res.cols, res.type());
-	for (int i = res.rows - 1; i >= 0; --i)
-	{
-		temp.push_back(res.row(i));
-	}
-	res = temp;
-	//viewer.setSceneData(grp);
-	//viewer.run();
-	
-	//viewer.setSceneData(grp);
-	//viewer.realize();
-	//viewer.frame();
-	//viewer.setCameraManipulator(0);
-	//viewer.run();
- 	//cv::Mat wrap(sz.height, sz.width, CV_8UC3, img->data());
-	//wrap.copyTo(res);
+    //osr(grp, &viewer, sz.width, sz.height, &res);
+	viewer.setSceneData(grp);
+	renderSceneToImage(&viewer, "c:\\Users\\elhanan7\\Programming\\CVM\\CVM\\res.png", sz.width, sz.height);
+	//cv::Mat temp(0, res.cols, res.type());
+	//for (int i = res.rows - 1; i >= 0; --i)
+	//{
+	//	temp.push_back(res.row(i));
+	//}
+	//res = temp;
 }
 
 }

@@ -1,6 +1,7 @@
 #include "video_to_mosaic.h"
 
 #include <boost/property_tree/ptree_fwd.hpp>
+#include "global_motion_estimator.h"
 
 namespace videoMosaic {
 
@@ -16,6 +17,7 @@ void VideoToMosaic::Reset()
 	m_vtm = boost::shared_ptr<VideoToMHI>(new VideoToMHI(m_ini));
 	m_followMotionStrictly = m_ini.get("VideoToMosaic.FollowMotionStrictly", true);
 	m_motionExpansionFactor = m_ini.get("VideoToMosaic.MotionExpansionFactor", 1.5);
+	m_compensateForGlobalMotion = m_ini.get("VideoToMosaic.CompensateForGlobalMotion", false);
 	m_firstImage = true;
 }
 
@@ -24,7 +26,7 @@ void VideoToMosaic::ProcessNext(const cv::Mat_<cv::Vec3b> input, cv::Mat& output
 	cv::Mat gray;
 	cv::Mat_<cv::Vec3b> result(input.size());
 	cv::cvtColor(input, gray, CV_BGR2GRAY);
-	m_vtm->Give(gray);
+	m_vtm->Give(gray, m_compensateForGlobalMotion);
 	cv::Mat_<float> mhi = m_vtm->Take().clone();
 	std::vector<cv::Rect> segs;
 	m_vtm->TakeSegmentation(segs);
@@ -50,14 +52,44 @@ void VideoToMosaic::ProcessNext(const cv::Mat_<cv::Vec3b> input, cv::Mat& output
 			cv::ellipse(motionMask, center, axes,0 ,0, 360,cv::Scalar(1),-1);
 		}
 	}
-	if (!m_firstImage)
+	if (m_compensateForGlobalMotion)
 	{
-		m_imageToMosaic->Process(input, result, motionMask);
+		if (m_dirtyMask.empty())
+		{
+			m_dirtyMask = cv::Mat_<unsigned char>(input.size());
+		}
+		cv::Mat trans;
+		bool motionValid = m_vtm->TakeGlobalTrans(trans);
+		if (motionValid)
+		{
+			cv::Mat_<unsigned char> tempDirty, invalidPixels;
+			cv::warpPerspective(m_dirtyMask, tempDirty, trans, m_dirtyMask.size());
+			m_dirtyMask = tempDirty;
+			GlobalMotionEstimator::CalculateValidMask(trans, input.size(), invalidPixels);
+			m_dirtyMask.setTo(1, invalidPixels);
+			if (cv::sum(m_dirtyMask)[0] / float(input.size().area()) > 0.5)
+			{
+				m_imageToMosaic->Process(input, result, m_dirtyMask, trans);
+				m_dirtyMask.setTo(0);
+			}
+			m_imageToMosaic->Process(input, result, motionMask, trans);
+		}
+		else
+		{
+			m_imageToMosaic->Process(input, result);
+		}
 	}
 	else
 	{
-		m_imageToMosaic->Process(input, result);
-		m_firstImage = false;
+		if (!m_firstImage)
+		{
+			m_imageToMosaic->Process(input, result, motionMask);
+		}
+		else
+		{
+			m_imageToMosaic->Process(input, result);
+			m_firstImage = false;
+		}
 	}
 	output = result;
 }

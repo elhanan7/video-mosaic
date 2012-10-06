@@ -9,7 +9,7 @@ GlobalMotionEstimator::GlobalMotionEstimator(const boost::property_tree::ptree& 
 {
 }
 
-bool GlobalMotionEstimator::Estimate(cv::Mat_<unsigned char> from, cv::Mat_<unsigned char> to, cv::Mat& , cv::Mat& trans)
+bool GlobalMotionEstimator::Estimate(cv::Mat_<unsigned char> from, cv::Mat_<unsigned char> to , cv::Mat& trans)
 {
 	static cv::Ptr<cv::FeatureDetector> siftDetect = 
 		cv::Ptr<cv::FeatureDetector>(new cv::SIFT());

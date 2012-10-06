@@ -21,8 +21,10 @@ private:
 	boost::shared_ptr<ImageToMosaic> m_imageToMosaic;
 	boost::shared_ptr<VideoToMHI> m_vtm;
 	bool m_firstImage;
+	cv::Mat_<unsigned char> m_dirtyMask;
 	bool m_followMotionStrictly;
 	double m_motionExpansionFactor;
+	bool m_compensateForGlobalMotion;
 
 };
 

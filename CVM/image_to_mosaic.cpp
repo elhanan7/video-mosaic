@@ -112,7 +112,8 @@ ImageToMosaic::ImageToMosaic(const bpt::ptree& ini) :
 	m_saveTopographic = ini.get("ImageToMosaic.SaveTopographic", true);
 	m_maskTileLocationsWithMotion = ini.get("ImageToMosaic.MaskTileLocationsWithMotion", false);
 	m_maskGuideLinesWithMotion = ini.get("ImageToMosaic.MaskGuideLinesWithMotion", true);
-	m_tsize = ProcessTileSize(ini, cv::Size2f(4,4));
+	m_origTileSize = ProcessTileSize(ini, cv::Size2f(4,4));
+	m_tsize = m_origTileSize;
 	m_recolorize = ini.get("ImageToMosaic.RecolorizeOnEachFrame", true);
 }
 
@@ -196,6 +197,31 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 	}
 
 	output = fcolor;
+}
+
+void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b>& output, cv::Mat motionMask, const cv::Mat& motionTrans)
+{
+	cv::Mat_<unsigned char> tmp;
+	cv::warpPerspective(m_lastGL, tmp, motionTrans, m_lastGL.size());
+	m_lastGL = tmp;
+	cv::warpPerspective(m_lastTileMask, tmp, motionTrans, m_lastTileMask.size());
+	m_lastTileMask = tmp;
+	double x1, x2, y1, y2;
+	x1 = motionTrans.at<double>(cv::Point(0,0));
+	x2 = motionTrans.at<double>(cv::Point(0,1));
+	y1 = motionTrans.at<double>(cv::Point(1,0));
+	y2 = motionTrans.at<double>(cv::Point(1,1));
+	m_tsize = cv::Size2f(std::sqrt(x1*x1 + x2*x2) * m_tsize.width, std::sqrt(y1*y1 + y2*y2) * m_tsize.height);
+
+	for (auto iter = m_lastPolygons.begin(); iter != m_lastPolygons.end(); ++iter)
+	{
+		cv::perspectiveTransform(iter->vertices, iter->vertices, motionTrans);
+		std::vector<cv::Point2d> centerVectorized;
+		centerVectorized.push_back(iter->center);
+		cv::perspectiveTransform(centerVectorized, centerVectorized, motionTrans);
+		iter->center = centerVectorized[0];
+	}
+	Process(input, output, motionMask);
 }
 
 }

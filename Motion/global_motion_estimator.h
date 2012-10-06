@@ -9,8 +9,8 @@ class GlobalMotionEstimator
 {
 public:
 	GlobalMotionEstimator(const boost::property_tree::ptree& ini);
-	bool Estimate(cv::Mat_<unsigned char> from, cv::Mat_<unsigned char> to, cv::Mat& , cv::Mat& trans);
-	void CalculateValidMask(cv::Mat trans, const cv::Size& sz, cv::Mat& mask);
+	bool Estimate(cv::Mat_<unsigned char> from, cv::Mat_<unsigned char> to, cv::Mat& trans);
+	static void CalculateValidMask(cv::Mat trans, const cv::Size& sz, cv::Mat& mask);
 };
 
 }

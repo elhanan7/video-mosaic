@@ -22,6 +22,7 @@ class ImageToMosaic
 public:
 	ImageToMosaic(const boost::property_tree::ptree& ini);
 	void Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b>& output, cv::Mat motionMask = cv::Mat());
+	void Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b>& output, cv::Mat motionMask, const cv::Mat& motionTrans);
 
 private:
 	enum RenderImpl
@@ -52,6 +53,7 @@ private:
 	bool m_maskGuideLinesWithMotion;
 	bool m_recolorize;
 	cv::Size2f m_tsize;
+	cv::Size2f m_origTileSize;
 };
 
 }
