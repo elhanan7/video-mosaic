@@ -19,13 +19,15 @@ namespace
 	double maxX(0), maxY(0);
 	std::string GenerateTempFileName()
 	{
-		//char buffer [L_tmpnam];
-		//memset(buffer, 0, L_tmpnam * sizeof(char));
-		//tmpnam(buffer);
-		//std::string tmpName(buffer);
-		//tmpName = "." + tmpName;
-		//return tmpName;
-		return "im_temporary.";
+		char buffer [L_tmpnam];
+		memset(buffer, 0, L_tmpnam * sizeof(char));
+		tmpnam(buffer);
+		std::string tmpNameWithDots(buffer), tmpName;
+		std::copy_if(tmpNameWithDots.begin(), tmpNameWithDots.end(),
+			std::back_inserter(tmpName), [](char c) -> bool {return c != '.' &&
+																	c != '\\' &&
+																	c != '/';});
+		return tmpName;
 	}
 
 	std::string SerializeVertex(cv::Point2d vert)
@@ -65,9 +67,10 @@ namespace
 PovRayRenderer::PovRayRenderer(const bpt::ptree& ini)
 {
 	m_sizeMultiplier = ini.get("PovRayRenderer.SizeMultiplier", 2);
-	m_povrayPath = ini.get("PovRayRenderer.PovRayPath", "povray.exe");
+	m_povrayPath = ini.get("PovRayRenderer.PovRayPath", "povray");
 	m_povIniPath = ini.get("PovRayRenderer.PovRayIniPath", "povray.ini");
 	m_tileHeight = ini.get("PovRayRenderer.TileHeight", 2.0f);
+	m_antiAlias  = ini.get("PovRayRenderer.Antialiasing", true);
 
 }
 
@@ -77,8 +80,8 @@ void PovRayRenderer::Process(const PolygonList& polygons, cv::Size sz, cv::Mat& 
 	cv::Size2f halfSize(sz.width/2.0f, sz.height/2.0f);
 
 	std::string tempNameNoExt = GenerateTempFileName();
-	std::string tempName = tempNameNoExt + "pov";
-	std::string tempResName = tempNameNoExt + "png";
+	std::string tempName = tempNameNoExt + ".pov";
+	std::string tempResName = tempNameNoExt + ".png";
 	std::ofstream file(tempName);
 	file << "#include \"colors.inc\"\n#include \"stones.inc\"\nlight_source  {\n<";
 	file << halfSize.width <<","<<halfSize.width/2<<","<<0.85*halfSize.height <<"> White }\n";
@@ -99,8 +102,9 @@ void PovRayRenderer::Process(const PolygonList& polygons, cv::Size sz, cv::Mat& 
 		file << SerializePolygon(sz, iter->vertices, iter->color, m_tileHeight);
 	}
 	file.close();
+	std::string aaStr = m_antiAlias? " +A " : " ";
 	std::stringstream cmdStream;
-	cmdStream << m_povrayPath << " -D +L " << m_povIniPath << " ";
+	cmdStream << m_povrayPath << aaStr << " -D +L " << m_povIniPath << " ";
 	cmdStream << " +W" << sz.width*m_sizeMultiplier << " +H" << sz.height*m_sizeMultiplier << " " << tempName << " > nul";
 	system(cmdStream.str().c_str());
 	res = cv::imread(tempResName);

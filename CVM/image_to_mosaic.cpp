@@ -127,6 +127,10 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 	frame = input;
 	
 	cvtColor(frame, edges, CV_RGB2GRAY);
+	if (motionMask.empty())
+	{
+		m_tsize = m_origTileSize;
+	}
 	m_guideLines.Process(edges, edges);
 	if (m_maskGuideLinesWithMotion && !motionMask.empty())
 	{
@@ -167,11 +171,10 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 	{
 		for (auto iter = polygons.begin(); iter != polygons.end(); ++iter)
 		{
-			iter->color = input(iter->center);
+			iter->color = input(clamp(iter->center, input.size()));
 		}
 	}
 	m_lastPolygons = polygons;
-
 
 	if (m_renderImpl == RENDER_VORONOI)
 	{
@@ -219,7 +222,7 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 		std::vector<cv::Point2d> centerVectorized;
 		centerVectorized.push_back(iter->center);
 		cv::perspectiveTransform(centerVectorized, centerVectorized, motionTrans);
-		iter->center = centerVectorized[0];
+		iter->center = clamp(centerVectorized[0], input.size());
 	}
 	Process(input, output, motionMask);
 }

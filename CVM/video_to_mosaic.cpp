@@ -10,7 +10,6 @@ VideoToMosaic::VideoToMosaic(const boost::property_tree::ptree& ini)
 	m_ini = ini;
 	Reset();
 }
-
 void VideoToMosaic::Reset()
 {
 	m_imageToMosaic = boost::shared_ptr<ImageToMosaic>(new ImageToMosaic(m_ini));
@@ -69,10 +68,14 @@ void VideoToMosaic::ProcessNext(const cv::Mat_<cv::Vec3b> input, cv::Mat& output
 			m_dirtyMask.setTo(1, invalidPixels);
 			if (cv::sum(m_dirtyMask)[0] / float(input.size().area()) > 0.5)
 			{
+				m_dirtyMask.setTo(1, motionMask);
 				m_imageToMosaic->Process(input, result, m_dirtyMask, trans);
 				m_dirtyMask.setTo(0);
 			}
-			m_imageToMosaic->Process(input, result, motionMask, trans);
+			else
+			{
+				m_imageToMosaic->Process(input, result, motionMask, trans);
+			}
 		}
 		else
 		{

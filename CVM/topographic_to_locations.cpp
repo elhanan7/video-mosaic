@@ -31,7 +31,8 @@ void Skeleton(cv::Mat_<unsigned char> input, cv::Mat& output)
  
 	cv::Mat element = cv::getStructuringElement(cv::MORPH_CROSS, cv::Size(3, 3));
  
-	bool done;		
+	bool done;
+	int iters = 0;
 	do
 	{
 	  cv::erode(img, eroded, element);
@@ -41,6 +42,8 @@ void Skeleton(cv::Mat_<unsigned char> input, cv::Mat& output)
 	  eroded.copyTo(img);
  
 	  done = (cv::norm(img) == 0);
+	  iters++;
+	  if (iters > 10) break;
 	} while (!done);
 
 	output = skel;

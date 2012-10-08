@@ -17,11 +17,12 @@ namespace videoMosaic {
 
 	typedef std::vector<Polygon> PolygonList;
 
-	inline cv::Point clamp(cv::Point pt, cv::Size sz)
+	template<typename T>
+	inline cv::Point_<T> clamp(cv::Point_<T> pt, cv::Size sz)
 	{
-		int rx = std::min(sz.width - 1, std::max(pt.x,0));
-		int ry = std::min(sz.height - 1, std::max(pt.y,0));
-		return cv::Point(rx, ry);
+		T rx = std::min(static_cast<T>(sz.width - 1), std::max(pt.x,static_cast<T>(0)));
+		T ry = std::min(static_cast<T>(sz.height - 1), std::max(pt.y,static_cast<T>(0)));
+		return cv::Point_<T>(rx, ry);
 	}
 
 	namespace utils {

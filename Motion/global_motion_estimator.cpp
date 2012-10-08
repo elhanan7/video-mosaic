@@ -5,14 +5,16 @@
 #include <opencv2/nonfree/features2d.hpp>
 
 namespace videoMosaic {
-GlobalMotionEstimator::GlobalMotionEstimator(const boost::property_tree::ptree& /*ini*/)
+GlobalMotionEstimator::GlobalMotionEstimator(const boost::property_tree::ptree& ini)
 {
+	m_distanceThreshold = ini.get("GlobalMotionEstimator.DistanceThreshold", 25.0f);
+	m_minimumRequiredMatches = ini.get("GlobalMotionEstimator.MinimumRequiredMatches", 10);
 }
 
 bool GlobalMotionEstimator::Estimate(cv::Mat_<unsigned char> from, cv::Mat_<unsigned char> to , cv::Mat& trans)
 {
 	static cv::Ptr<cv::FeatureDetector> siftDetect = 
-		cv::Ptr<cv::FeatureDetector>(new cv::SIFT());
+		cv::Ptr<cv::FeatureDetector>(new cv::FastFeatureDetector());
 	static cv::Ptr<cv::DescriptorExtractor> siftExtract = 
 		cv::Ptr<cv::DescriptorExtractor>(new cv::SIFT());
 	static cv::Ptr<cv::DescriptorMatcher> flann = cv::DescriptorMatcher::create("FlannBased");
@@ -35,12 +37,12 @@ bool GlobalMotionEstimator::Estimate(cv::Mat_<unsigned char> from, cv::Mat_<unsi
 	std::vector<cv::DMatch> matches, goodMatches;
 	flann->match(descs1, descs2, matches);
 
-	std::copy_if(matches.begin(), matches.end(), std::back_inserter(goodMatches), [](const cv::DMatch& match) -> bool
+	std::copy_if(matches.begin(), matches.end(), std::back_inserter(goodMatches), [&](const cv::DMatch& match) -> bool
 	{
-		return match.distance < 30;
+		return match.distance < m_distanceThreshold;
 	});
 
-	if (goodMatches.size() < 10)
+	if (goodMatches.size() < m_minimumRequiredMatches)
 	{
 		return false;
 	}

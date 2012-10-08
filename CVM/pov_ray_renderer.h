@@ -19,6 +19,7 @@ private:
 	std::string m_povrayPath;
 	std::string m_povIniPath;
 	float m_tileHeight;
+	bool m_antiAlias;
 };
 
 }
