@@ -1,3 +1,7 @@
+#include "config.h"
+
+#ifdef USE_OSG
+
 #include <Windows.h>
 #include <osg/Camera>
 #include <osg/CameraNode>
@@ -89,3 +93,5 @@ renderSceneToImage(::osgViewer::Viewer* viewer, const ::std::string& sFileName_,
 	viewer->realize();
 	viewer->frame();
 }
+
+#endif
