@@ -43,6 +43,9 @@
     <Filter Include="Header Files\algorithm\tile_placers">
       <UniqueIdentifier>{e49c5345-1b91-4e44-b232-6ae40e1e3273}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{904cf5e9-e97d-4b15-a94e-d2de5f571a27}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="directory_source.cpp">
@@ -86,6 +89,9 @@
     </ClCompile>
     <ClCompile Include="ideal_to_cut_polygons.cpp">
       <Filter>Source Files\algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="parameter_parser.cpp">
+      <Filter>Source Files\utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +156,9 @@
       <Filter>Header Files\algorithm\tile_placers</Filter>
     </ClInclude>
     <ClInclude Include="polygon_utils.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="parameters_parser.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
   </ItemGroup>

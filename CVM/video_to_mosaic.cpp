@@ -17,6 +17,7 @@ void VideoToMosaic::Reset()
 	m_followMotionStrictly = m_ini.get("VideoToMosaic.FollowMotionStrictly", true);
 	m_motionExpansionFactor = m_ini.get("VideoToMosaic.MotionExpansionFactor", 1.5);
 	m_compensateForGlobalMotion = m_ini.get("VideoToMosaic.CompensateForGlobalMotion", false);
+	m_stabilizeMotion = m_ini.get("VideoToMosaic.StabilizeMotion", true);
 	m_firstImage = true;
 }
 
@@ -62,7 +63,7 @@ void VideoToMosaic::ProcessNext(const cv::Mat_<cv::Vec3b> input, cv::Mat& output
 		if (motionValid)
 		{
 			cv::Mat_<unsigned char> tempDirty, invalidPixels;
-			cv::warpPerspective(m_dirtyMask, tempDirty, trans, m_dirtyMask.size());
+			cv::warpPerspective(m_dirtyMask, tempDirty, trans, m_dirtyMask.size(), cv::INTER_NEAREST);
 			m_dirtyMask = tempDirty;
 			GlobalMotionEstimator::CalculateValidMask(trans, input.size(), invalidPixels);
 			m_dirtyMask.setTo(1, invalidPixels);
@@ -82,7 +83,7 @@ void VideoToMosaic::ProcessNext(const cv::Mat_<cv::Vec3b> input, cv::Mat& output
 			m_imageToMosaic->Process(input, result);
 		}
 	}
-	else
+	else if (m_stabilizeMotion)
 	{
 		if (!m_firstImage)
 		{
@@ -93,6 +94,10 @@ void VideoToMosaic::ProcessNext(const cv::Mat_<cv::Vec3b> input, cv::Mat& output
 			m_imageToMosaic->Process(input, result);
 			m_firstImage = false;
 		}
+	}
+	else
+	{
+		m_imageToMosaic->Process(input, result);
 	}
 	output = result;
 }

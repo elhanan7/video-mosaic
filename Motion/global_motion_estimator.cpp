@@ -62,7 +62,7 @@ bool GlobalMotionEstimator::Estimate(cv::Mat_<unsigned char> from, cv::Mat_<unsi
 void GlobalMotionEstimator::CalculateValidMask(cv::Mat trans, const cv::Size& sz, cv::Mat& mask)
 {
 	cv::Mat zer = cv::Mat_<unsigned char>::zeros(sz); 
-	cv::warpPerspective(zer, mask, trans, sz, 1, cv::BORDER_CONSTANT, 1);
+	cv::warpPerspective(zer, mask, trans, sz, cv::INTER_NEAREST, cv::BORDER_CONSTANT, 1);
 }
 
 }

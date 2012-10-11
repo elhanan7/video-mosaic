@@ -25,6 +25,7 @@ private:
 	bool m_followMotionStrictly;
 	double m_motionExpansionFactor;
 	bool m_compensateForGlobalMotion;
+	bool m_stabilizeMotion;
 
 };
 

@@ -83,7 +83,7 @@ void PovRayRenderer::Process(const PolygonList& polygons, cv::Size sz, cv::Mat& 
 	std::string tempName = tempNameNoExt + ".pov";
 	std::string tempResName = tempNameNoExt + ".png";
 	std::ofstream file(tempName);
-	file << "#include \"colors.inc\"\n#include \"stones.inc\"\nlight_source  {\n<";
+	file << "#version 3.6\n#include \"colors.inc\"\n#include \"stones.inc\"\nlight_source  {\n<";
 	file << halfSize.width <<","<<halfSize.width/2<<","<<0.85*halfSize.height <<"> White }\n";
 	file << "camera {\nlocation <";
     file << halfSize.width <<","<<halfSize.width<<","<<halfSize.height<<">\nup <0,1,0>\n";

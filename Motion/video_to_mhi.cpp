@@ -94,7 +94,7 @@ void VideoToMHIImpl::Give(const cv::Mat input, bool globalMotion)
 		cv::warpPerspective(b, tmp, distantMotionTrans, b.size(), 1, cv::BORDER_DEFAULT);
 		b = tmp;
 		m_motionEstimator.CalculateValidMask(distantMotionTrans, m_mhi.size(), warpMask);
-		cv::warpPerspective(m_mhi, diff, m_globalTrans, m_mhi.size());
+		cv::warpPerspective(m_mhi, diff, m_globalTrans, m_mhi.size(), cv::INTER_NEAREST);
 		m_mhi = diff;
 	}
 

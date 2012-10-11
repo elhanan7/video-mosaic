@@ -9,31 +9,13 @@ namespace videoMosaic
 		PrecisePlacerTraits(cv::Mat_<float> dxx, cv::Mat_<float> dyy, cv::Mat_<unsigned char> tileMask, cv::Size2f tsz, float maxAreaPercent) : imSize(dxx.size()), tSize(tsz), dx(dxx), dy(dyy), mask(tileMask),
 			maxPercent(maxAreaPercent)
 		{
-			half = cv::Point2f(tSize.width - 1, tSize.height - 1);
-			ones = cv::Point2f(1,1);
 		};
 
 		typedef Polygon PolygonType;
 
 		PolygonType GetPolygon(cv::Point pt)
 		{
-			Polygon poly;
-			poly.center = pt;
-			poly.orientation = atan2(dy(pt), dx(pt));
-			poly.tileSize = tSize;
-
-			std::vector<cv::Point2d> temp;
-			double halfx = poly.tileSize.width / 2;
-			double halfy = poly.tileSize.height / 2.0;
-			poly.vertices.push_back(cv::Point2d(-halfx, -halfy));
-			poly.vertices.push_back(cv::Point2d( halfx, -halfy));
-			poly.vertices.push_back(cv::Point2d( halfx,  halfy));
-			poly.vertices.push_back(cv::Point2d(-halfx,  halfy));
-			transformations::Shift shift(poly.center.x ,poly.center.y);
-			transformations::Rotate rot(poly.orientation);
-			std::transform(poly.vertices.begin(), poly.vertices.end(), poly.vertices.begin(), shift*rot);
-			poly.center = pt;
-			return poly;
+			return utils::CreateSimplePolygon(pt, atan2(dy(pt), dx(pt)), tSize);
 		}
 
 		void CheckUpdate(PolygonType& poly, PolygonList& polygons)
@@ -73,14 +55,14 @@ namespace videoMosaic
 			}
 			cv::bitwise_or(maskRoi, singlePolyRoi, maskRoi);
 			std::vector<std::vector<cv::Point>> contours;
-			cv::findContours(cutPolygon, contours, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+			cv::findContours(cutPolygon, contours, CV_RETR_LIST, CV_CHAIN_APPROX_TC89_KCOS);
 			for (auto iter = contours.cbegin(); iter != contours.cend(); ++iter)
 			{
 				if (iter->size() >= 3)
 				{
 					poly.vertices.clear();
 					std::transform(iter->cbegin(), iter->cend(), std::back_inserter(poly.vertices), transformations::Shift(roi.tl().x, roi.tl().y));
-					utils::ScalePolygon(poly, 0.9);
+					//utils::ScalePolygon(poly, 0.9);
 					poly.center = utils::FindCenter(poly);
 					polygons.push_back(poly);
 					lastPt = poly.center;
@@ -105,7 +87,6 @@ namespace videoMosaic
 		cv::Mat_<float> dx,dy;
 		float maxPercent;
 		cv::Mat_<unsigned char> mask, singlePolyMask;
-		cv::Point2f half, ones;
 		cv::Point lastPt;
 	};
 }

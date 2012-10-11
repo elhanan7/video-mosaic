@@ -3,20 +3,27 @@
 
 #include "directory_source.h"
 #include "video_to_mosaic.h"
+#include "parameters_parser.h"
 
-#include <boost/property_tree/ini_parser.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
 
 using namespace cv;
 
-int main()
+int main(int argc, char** argv)
 {
 	Mat_<cv::Vec3b> frame, fcolor;
 
 	videoMosaic::DirectorySource ds(".", "frame(\\d+)\\.png",0,0);
-
 	boost::property_tree::ptree ini;
-	boost::property_tree::ini_parser::read_ini("cvm.ini", ini);
+	if (!videoMosaic::parse_parameters(argc - 1, argv + 1, ini))
+	{
+		std::cerr << "Problem with parameters" << std::endl;
+		return 1;
+	}
+	int skip = ini.get("ProcessDirectory.Skip", 0);
+	for (int i = 0; i < skip; ++i) ds.Next();
+	
 	videoMosaic::VideoToMosaic vtm(ini);
 	while (ds.HasNext())
 	{

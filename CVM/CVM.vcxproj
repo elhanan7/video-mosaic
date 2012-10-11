@@ -143,6 +143,7 @@
     <ClCompile Include="image_to_mosaic.cpp" />
     <ClCompile Include="offscreen_render.cpp" />
     <ClCompile Include="opencv_renderer.cpp" />
+    <ClCompile Include="parameter_parser.cpp" />
     <ClCompile Include="polygons_to_scene.cpp" />
     <ClCompile Include="pov_ray_renderer.cpp" />
     <ClCompile Include="scene_to_image.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="image_to_mosaic.h" />
     <ClInclude Include="locator_grid.h" />
     <ClInclude Include="opencv_renderer.h" />
+    <ClInclude Include="parameters_parser.h" />
     <ClInclude Include="polygons_to_scene.h" />
     <ClInclude Include="polygon_utils.h" />
     <ClInclude Include="pov_ray_renderer.h" />

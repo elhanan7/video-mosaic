@@ -25,6 +25,8 @@ SET(CVM_HDRS
 	topological_map_maker.h
 	transfromations.h
 	utils.h
+	polygon_utils.h
+	parameters_parser.h
 	video_source.h
 	video_to_mosaic.h
 	voronoi_renderer.h
@@ -45,7 +47,8 @@ SET(CVM_SRCS
 	topographic_to_locations.cpp
 	topological_map_maker.cpp
 	video_to_mosaic.cpp
-	voronoi_renderer.cpp)
+	voronoi_renderer.cpp
+	parameters_parser.cpp)
 
 
 

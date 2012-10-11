@@ -52,6 +52,7 @@ private:
 	bool m_maskTileLocationsWithMotion;
 	bool m_maskGuideLinesWithMotion;
 	bool m_recolorize;
+	bool m_blurColors;
 	cv::Size2f m_tsize;
 	cv::Size2f m_origTileSize;
 };
