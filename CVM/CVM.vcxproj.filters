@@ -90,7 +90,7 @@
     <ClCompile Include="ideal_to_cut_polygons.cpp">
       <Filter>Source Files\algorithm</Filter>
     </ClCompile>
-    <ClCompile Include="parameter_parser.cpp">
+    <ClCompile Include="parameters_parser.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
   </ItemGroup>

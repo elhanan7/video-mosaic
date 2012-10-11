@@ -143,7 +143,7 @@
     <ClCompile Include="image_to_mosaic.cpp" />
     <ClCompile Include="offscreen_render.cpp" />
     <ClCompile Include="opencv_renderer.cpp" />
-    <ClCompile Include="parameter_parser.cpp" />
+    <ClCompile Include="parameters_parser.cpp" />
     <ClCompile Include="polygons_to_scene.cpp" />
     <ClCompile Include="pov_ray_renderer.cpp" />
     <ClCompile Include="scene_to_image.cpp" />
