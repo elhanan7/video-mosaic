@@ -16,11 +16,8 @@ int main(int argc, char** argv)
 
 	videoMosaic::DirectorySource ds(".", "frame(\\d+)\\.png",0,0);
 	boost::property_tree::ptree ini;
-	if (!videoMosaic::parse_parameters(argc - 1, argv + 1, ini))
-	{
-		std::cerr << "Problem with parameters" << std::endl;
-		return 1;
-	}
+	std::vector<std::string> args;
+	videoMosaic::ParseParameters(argc - 1, argv + 1, ini, args);
 	int skip = ini.get("ProcessDirectory.Skip", 0);
 	for (int i = 0; i < skip; ++i) ds.Next();
 	

@@ -13,20 +13,27 @@ namespace
 
 	bool ParseOne(const char* one, boost::property_tree::ptree& pt)
 	{
-		boost::cmatch mr;
-		if (regex_match(one, mr, key_value_re))
+		try
 		{
-			pt.put(mr[1] + "." + mr[2], mr[3]);
+			boost::cmatch mr;
+			if (regex_match(one, mr, key_value_re))
+			{
+				pt.put(mr[1] + "." + mr[2], mr[3]);
+			}
+			else if (regex_match(one, mr, write_ini_re))
+			{
+				boost::property_tree::ini_parser::write_ini(mr[1], pt);
+			}
+			else if (regex_match(one, mr, ini_file_re))
+			{
+				boost::property_tree::ini_parser::read_ini(mr[1], pt);
+			}
+			else
+			{
+				return false;
+			}
 		}
-		else if (regex_match(one, mr, write_ini_re))
-		{
-			boost::property_tree::ini_parser::write_ini(mr[1], pt);
-		}
-		else if (regex_match(one, mr, ini_file_re))
-		{
-			boost::property_tree::ini_parser::read_ini(mr[1], pt);
-		}
-		else
+		catch (std::exception&)
 		{
 			return false;
 		}
@@ -36,13 +43,12 @@ namespace
 
 namespace videoMosaic 
 {
-bool parse_parameters(int argc, char** argv, boost::property_tree::ptree& p)
-{
-	for (int i = 0; i < argc; ++i)
+	void ParseParameters(int argc, char** argv, boost::property_tree::ptree& p, std::vector<std::string>& unparsed)
 	{
-		if (!ParseOne(argv[i], p)) return false;
+		for (int i = 0; i < argc; ++i)
+		{
+			if (!ParseOne(argv[i], p)) unparsed.push_back(argv[i]);
+		}
 	}
-	return true;
-}
 
 }
