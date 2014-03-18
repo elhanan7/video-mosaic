@@ -17,6 +17,7 @@ public:
 	TopographicToLocations(const boost::property_tree::ptree& ini);
 
 	void Process(const cv::Mat_<unsigned char>& topo,
+				 const cv::Mat_<float> dist,
 				 const cv::Mat_<float> dx, 
 				 const cv::Mat_<float> dy,
 				 cv::Size2f tsize, 

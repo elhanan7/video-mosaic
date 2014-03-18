@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7c19e679-49e9-43f8-9440-b68ab1aa1841}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>estimate_motion_test.py</StartupFile>
+    <StartupFile>test_python_module.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>

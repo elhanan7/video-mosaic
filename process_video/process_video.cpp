@@ -5,6 +5,7 @@
 #include <highgui.h>
 
 #include <video_to_mosaic.h>
+#include <parameters_parser.h>
 
 #include <boost/property_tree/ini_parser.hpp>
 
@@ -17,7 +18,8 @@ int main(int argc, char* argv[])
 	cv::Ptr<cv::VideoWriter> vwriter;
 	cv::Mat inMat, rgbMat, outMat, outBGR;
 	boost::property_tree::ptree ini;
-	boost::property_tree::ini_parser::read_ini("cvm.ini", ini);
+	std::vector<std::string> args;
+	videoMosaic::ParseParameters(argc - 1, argv + 1, ini, args);
 	videoMosaic::VideoToMosaic vtm(ini);
 	int idx = 0;
 	while (vreader.read(inMat))

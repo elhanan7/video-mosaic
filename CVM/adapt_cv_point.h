@@ -5,7 +5,7 @@
 
 #define FACTOR (1 << 16)
 
-typedef std::list<cv::Point2d> MyPolygon;
+typedef std::vector<cv::Point2d> MyPolygon;
 typedef std::vector<MyPolygon> PolygonList;
 
 namespace boost { namespace polygon {
@@ -45,7 +45,7 @@ namespace boost { namespace polygon {
 
 //I'm lazy and use the stl everywhere to avoid writing my own classes
 //my toy polygon is a std::list<CPoint>
-typedef std::list<cv::Point2d> CPolygon;
+typedef std::vector<cv::Point2d> CPolygon;
 
 //we need to specialize our polygon concept mapping in boost polygon
 namespace boost { namespace polygon {

@@ -9,48 +9,14 @@ PROJECT( CVM )
 #
 
 
+file(GLOB SOURCES_FILES *.cpp)
+file(GLOB HEADER_FILES *.h)
 
 SET(CVM_HDRS
-    adapt_cv_point.h
-	directory_source.h
-	guide_lines.h
-	ideal_to_cut_polygons.h
-	image_to_mosaic.h
-	locator_grid.h
-	opencv_renderer.h
-	polygons_to_scene.h
-	pov_ray_renderer.h
-	scene_to_image.h
-	topographic_to_locations.h
-	topological_map_maker.h
-	transfromations.h
-	utils.h
-	polygon_utils.h
-	parameters_parser.h
-	video_source.h
-	video_to_mosaic.h
-	voronoi_renderer.h
-	approximate_tile_placer.h
-	precise_tile_placer.h)
+    ${HEADER_FILES})
 	
 SET(CVM_SRCS
-	clipper.cpp
-	directory_source.cpp
-	guide_lines.cpp
-	ideal_to_cut_polygons.cpp
-	image_to_mosaic.cpp
-	offscreen_render.cpp
-	opencv_renderer.cpp
-	polygons_to_scene.cpp
-	pov_ray_renderer.cpp
-	scene_to_image.cpp
-	topographic_to_locations.cpp
-	topological_map_maker.cpp
-	video_to_mosaic.cpp
-	voronoi_renderer.cpp
-	parameters_parser.cpp)
-
-
+    ${SOURCES_FILES})
 
 INCLUDE_DIRECTORIES(
   ${CVM_SOURCE_DIR}

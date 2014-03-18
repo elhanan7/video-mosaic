@@ -6,7 +6,7 @@ namespace videoMosaic
 {
 	struct PrecisePlacerTraits
 	{
-		PrecisePlacerTraits(cv::Mat_<float> dxx, cv::Mat_<float> dyy, cv::Mat_<unsigned char> tileMask, cv::Size2f tsz, float maxAreaPercent) : imSize(dxx.size()), tSize(tsz), dx(dxx), dy(dyy), mask(tileMask),
+		PrecisePlacerTraits(cv::Mat_<float> ddist, cv::Mat_<float> dxx, cv::Mat_<float> dyy, cv::Mat_<unsigned char> tileMask, cv::Size2f tsz, float maxAreaPercent) : imSize(dxx.size()), tSize(tsz), dist(ddist), dx(dxx), dy(dyy), mask(tileMask),
 			maxPercent(maxAreaPercent)
 		{
 		};
@@ -15,7 +15,10 @@ namespace videoMosaic
 
 		PolygonType GetPolygon(cv::Point pt)
 		{
-			return utils::CreateSimplePolygon(pt, atan2(dy(pt), dx(pt)), tSize);
+			float pi = 3.14159265359f;
+			double orientation = atan2(dy(pt), dx(pt));
+			orientation = 2 * pi - (orientation + 0.5f * pi);
+			return utils::CreateSimplePolygon(pt, orientation, tSize);
 		}
 
 		void CheckUpdate(PolygonType& poly, PolygonList& polygons)
@@ -84,7 +87,7 @@ namespace videoMosaic
 
 		cv::Size imSize;
 	    cv::Size2f tSize;
-		cv::Mat_<float> dx,dy;
+		cv::Mat_<float> dx,dy, dist;
 		float maxPercent;
 		cv::Mat_<unsigned char> mask, singlePolyMask;
 		cv::Point lastPt;

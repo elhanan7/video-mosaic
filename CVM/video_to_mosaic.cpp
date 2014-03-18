@@ -31,9 +31,8 @@ void VideoToMosaic::ProcessNext(const cv::Mat_<cv::Vec3b> input, cv::Mat& output
 	std::vector<cv::Rect> segs;
 	m_vtm->TakeSegmentation(segs);
 	cv::Mat_<unsigned char> motionMask = cv::Mat::zeros(input.rows, input.cols, CV_8U);
-	for (auto iter = segs.cbegin(); iter != segs.cend(); ++iter)
+	for (const auto& rect: segs)
 	{
-		cv::Rect rect = *iter;
 		cv::Size axes(m_motionExpansionFactor*rect.width, m_motionExpansionFactor*rect.height);
 		cv::Point center(rect.x + 0.5*rect.width, rect.y + 0.5*rect.height);
 		if (m_followMotionStrictly)
@@ -80,7 +79,15 @@ void VideoToMosaic::ProcessNext(const cv::Mat_<cv::Vec3b> input, cv::Mat& output
 		}
 		else
 		{
-			m_imageToMosaic->Process(input, result);
+			if (!m_firstImage)
+			{
+				m_imageToMosaic->Process(input, result, motionMask);
+			}
+			else
+			{
+				m_imageToMosaic->Process(input, result);
+				m_firstImage = false;
+			}
 		}
 	}
 	else if (m_stabilizeMotion)

@@ -6,8 +6,8 @@ namespace videoMosaic
 {
 	struct ApproximatePlacerTraits
 	{
-		ApproximatePlacerTraits(cv::Size imsz, cv::Mat_<unsigned char> tileMask, cv::Size2f tsz, cv::Mat dxx, cv::Mat dyy) : 
-			imSize(imsz), tSize(tsz), mask(tileMask) , dx(dxx), dy(dyy)
+		ApproximatePlacerTraits(cv::Size imsz, cv::Mat_<unsigned char> tileMask, cv::Size2f tsz, cv::Mat ddist, cv::Mat dxx, cv::Mat dyy) :
+			imSize(imsz), tSize(tsz), mask(tileMask) , dist(ddist), dx(dxx), dy(dyy)
 		{
 			half = cv::Point(cv::saturate_cast<int>(tSize.width - 1), cv::saturate_cast<int>(tSize.height - 1));
 			ones = cv::Point(1,1);
@@ -18,6 +18,11 @@ namespace videoMosaic
 		PolygonType GetPolygon(cv::Point pt)
 		{
 			float orientation = utils::GetOrientation(dx(pt), dy(pt));
+			float myDist = dist(pt);
+			float factor = std::max(1.0f -  4 * myDist / dist.cols, 0.0f);
+			float pi = 3.14159265359f;
+			orientation = 2*pi - (orientation + 0.5f * pi);
+			//orientation -= 1.57079632679f; // factor;
 			return utils::CreateSimplePolygon(pt, orientation, tSize);
 		}
 
@@ -53,7 +58,7 @@ namespace videoMosaic
 		cv::Size2f tSize;
 		cv::Mat_<unsigned char> mask;
 		cv::Point half, ones;
-		cv::Mat_<float> dx, dy;
+		cv::Mat_<float> dx, dy, dist;
 	};
 
 }

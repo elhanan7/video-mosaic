@@ -14,11 +14,12 @@ int main(int argc, char** argv)
 {
 	Mat_<cv::Vec3b> frame, fcolor;
 
-	videoMosaic::DirectorySource ds(".", "frame(\\d+)\\.png",0,0);
 	boost::property_tree::ptree ini;
 	std::vector<std::string> args;
 	videoMosaic::ParseParameters(argc - 1, argv + 1, ini, args);
 	int skip = ini.get("ProcessDirectory.Skip", 0);
+	bool doReverse = ini.get("ProcessDirectory.Reverse", 0) != 0;
+	videoMosaic::DirectorySource ds(".", "frame(\\d+)\\.png", 0, 0, doReverse);
 	for (int i = 0; i < skip; ++i) ds.Next();
 	
 	videoMosaic::VideoToMosaic vtm(ini);

@@ -59,7 +59,7 @@ void GuideLines::Process(const cv::Mat& in, cv::Mat& out)
 		
 		cv::findContours(out, contours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
 		std::copy_if(contours.begin(), contours.end(), std::back_inserter(bigContours), 
-			[=](std::vector<cv::Point> vec) -> bool
+			[&](std::vector<cv::Point> vec)
 			{
 				return static_cast<int>(vec.size()) > this->m_contourSizeLimit;
 			});

@@ -77,7 +77,7 @@ namespace
 }
 
 ImageToMosaic::ImageToMosaic(const bpt::ptree& ini) :
-	m_guideLines(ini), m_topologicalMapMaker(ini), m_topologicalToLocations(ini), 
+m_guideLines(ini), m_topologicalMapMaker(ini), m_topologicalToLocations(ini), m_iterativePlacer(ini),
 	m_povRayRenderer(ini), 
 #ifdef USE_OSG
 	m_polygonsToScene(ini), m_sceneToImage(ini), 
@@ -133,13 +133,14 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 		m_tsize = m_origTileSize;
 	}
 	m_guideLines.Process(edges, edges);
+	//cv::Canny(edges, edges, 100, 500);
 	if (m_maskGuideLinesWithMotion && !motionMask.empty())
 	{
 		m_lastGL.copyTo(edges, 1 - motionMask);
 	}
 	m_lastGL = edges.clone();
-	cv::Mat_<float> dx,dy;
-	m_topologicalMapMaker.Process(edges, edges, m_tsize, dx, dy);
+	cv::Mat_<float> dx,dy, dist;
+	m_topologicalMapMaker.Process(edges, edges, m_tsize, dist, dx, dy);
 	PolygonList currentPolygons, polygons;
 	if (m_maskTileLocationsWithMotion &&  !motionMask.empty())
 	{
@@ -151,12 +152,17 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 		m_lastTileMask.create(input.size());
 		m_lastTileMask.setTo(0);
 	}
-	m_topologicalToLocations.Process(edges, dx, dy, m_tsize, m_lastTileMask, currentPolygons);
+	m_topologicalToLocations.Process(edges, dist, dx, dy, m_tsize, m_lastTileMask, currentPolygons);
 	
 	for (auto iter = currentPolygons.begin(); iter != currentPolygons.end(); ++iter)
 	{
 		iter->color = input(iter->center);
 		iter->orientation = atan2(dy(iter->center), dx(iter->center));
+	}
+
+	if (false /*m_iterativeTiling*/)
+	{
+		m_iterativePlacer.Process(m_tsize, currentPolygons);
 	}
 	
 	if (m_maskTileLocationsWithMotion &&  !motionMask.empty())
@@ -231,6 +237,11 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 		iter->center = clamp(centerVectorized[0], input.size());
 	}
 	Process(input, output, motionMask);
+}
+
+cv::Mat ImageToMosaic::GetGuideLinesImage()
+{
+	return m_lastGL;
 }
 
 }

@@ -151,6 +151,7 @@ void TopographicToLocations::ProcessInternal(Traits& traits, const cv::Mat_<unsi
 }
 
 void TopographicToLocations::Process(const cv::Mat_<unsigned char>& topo,
+									 const cv::Mat_<float> dist,
 									 const cv::Mat_<float> dx, 
 									 const cv::Mat_<float> dy,
 									 cv::Size2f tsize, 
@@ -159,12 +160,12 @@ void TopographicToLocations::Process(const cv::Mat_<unsigned char>& topo,
 {
 	if (m_precise)
 	{
-		PrecisePlacerTraits precise(dx, dy, tilesMask, tsize, m_maxOverlap);
+		PrecisePlacerTraits precise(dist, dx, dy, tilesMask, tsize, m_maxOverlap);
 		ProcessInternal(precise, topo, tsize, polygons);
 	}
 	else
 	{
-		ApproximatePlacerTraits approx(topo.size(), tilesMask, tsize, dx, dy);
+		ApproximatePlacerTraits approx(topo.size(), tilesMask, tsize, dist, dx, dy);
 		ProcessInternal(approx, topo, tsize, polygons);
 	}
 }

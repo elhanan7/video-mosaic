@@ -5,6 +5,7 @@
 #include "parameters_parser.h"
 
 #include <boost/property_tree/ptree.hpp>
+#include <boost/regex.hpp>
 #include <boost/filesystem.hpp>
 
 using namespace cv;
@@ -27,14 +28,20 @@ int main(int argc, char** argv)
 
 	std::cout << inName << std::endl;
 	std::string outName = "vm_" + inName;
+	std::string glName = "gl_" + inName;
 	if (args.size() > 1)
 	{
 		outName = args[1];
+		glName = "gl_" + args[1];
 	}
 
 	itm.Process(frame, fcolor);
 
 	cv::imwrite(outName, fcolor);
+	if (ini.get("ProcessFile.SaveGL", 0) == 1)
+	{
+		cv::imwrite(glName, itm.GetGuideLinesImage());
+	}
 
 	return 0;
 }

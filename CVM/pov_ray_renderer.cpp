@@ -84,7 +84,7 @@ void PovRayRenderer::Process(const PolygonList& polygons, cv::Size sz, cv::Mat& 
 	std::string tempResName = tempNameNoExt + ".png";
 	std::ofstream file(tempName);
 	file << "#version 3.6\n#include \"colors.inc\"\n#include \"stones.inc\"\nlight_source  {\n<";
-	file << halfSize.width <<","<<halfSize.width/2<<","<<0.85*halfSize.height <<"> White }\n";
+	file << halfSize.width << "," << halfSize.width / 2 << "," << 0.85*halfSize.height << "> White parallel point_at<" << halfSize.width << ",0," << 0.85*halfSize.height << "> }\n";
 	file << "camera {\nlocation <";
     file << halfSize.width <<","<<halfSize.width<<","<<halfSize.height<<">\nup <0,1,0>\n";
 	file << "right <" << (halfSize.width / halfSize.height) << ",0,0>\n";
@@ -104,7 +104,7 @@ void PovRayRenderer::Process(const PolygonList& polygons, cv::Size sz, cv::Mat& 
 	file.close();
 	std::string aaStr = m_antiAlias? " +A " : " ";
 	std::stringstream cmdStream;
-	cmdStream << m_povrayPath << aaStr << " -D +L " << m_povIniPath << " ";
+	cmdStream << m_povrayPath << aaStr << " -D " << " ";
 	cmdStream << " +W" << sz.width*m_sizeMultiplier << " +H" << sz.height*m_sizeMultiplier << " " << tempName << " > nul";
 	system(cmdStream.str().c_str());
 	res = cv::imread(tempResName);
