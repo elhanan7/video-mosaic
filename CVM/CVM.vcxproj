@@ -151,6 +151,7 @@
     <ClCompile Include="polygons_to_scene.cpp" />
     <ClCompile Include="pov_ray_renderer.cpp" />
     <ClCompile Include="scene_to_image.cpp" />
+    <ClCompile Include="scene_to_mosaic.cpp" />
     <ClCompile Include="topographic_to_locations.cpp" />
     <ClCompile Include="topographic_to_locations_iterative.cpp" />
     <ClCompile Include="topological_map_maker.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="pov_ray_renderer.h" />
     <ClInclude Include="precise_tile_placer.h" />
     <ClInclude Include="scene_to_image.h" />
+    <ClInclude Include="scene_to_mosaic.h" />
     <ClInclude Include="topographic_to_locations.h" />
     <ClInclude Include="topographic_to_locations_iterative.h" />
     <ClInclude Include="topological_map_maker.h" />

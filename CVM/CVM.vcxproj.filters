@@ -96,6 +96,9 @@
     <ClCompile Include="topographic_to_locations_iterative.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="scene_to_mosaic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="video_source.h">
@@ -165,6 +168,9 @@
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="topographic_to_locations_iterative.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scene_to_mosaic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

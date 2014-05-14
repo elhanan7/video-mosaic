@@ -15,11 +15,6 @@ public:
 	virtual ~VideoSource(void) {};
 };
 
-inline
-	void VideoSource::Reset()
-{
-	throw new std::logic_error("Not implemented");
-}
-
+inline void VideoSource::Reset() { throw new std::logic_error("Not implemented"); }
 }
 
