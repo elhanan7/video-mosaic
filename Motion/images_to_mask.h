@@ -2,15 +2,16 @@
 
 #include <cv.h>
 
-namespace videoMosaic {
+namespace videoMosaic
+{
 
 class ImagesToMask
 {
-public:
-	ImagesToMask(void);
-	~ImagesToMask(void);
+ public:
+   ImagesToMask(void);
+   ~ImagesToMask(void);
 
-	void Process(const cv::Mat& a, const cv::Mat b, cv::Point2f globalTrans, cv::Mat& mask);
+   void Process(const cv::Mat& a, const cv::Mat b, cv::Point2f globalTrans,
+                cv::Mat& mask);
 };
-
 }

@@ -19,5 +19,5 @@ add_custom_command(TARGET process_directory
                    POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy ${CVM_SOURCE_DIR}/cvm.ini ${process_directory_BINARY_DIR})
   
-TARGET_LINK_LIBRARIES(process_directory CVM Motion ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY} ${Boost_REGEX_LIBRARY} ${OpenCV_LIBS} ${OPENSCENEGRAPH_LIBRARIES})
+TARGET_LINK_LIBRARIES(process_directory Motion CVM ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY} ${Boost_REGEX_LIBRARY} ${OpenCV_LIBS} ${OPENSCENEGRAPH_LIBRARIES})
 
