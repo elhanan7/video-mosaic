@@ -79,7 +79,6 @@ ImageToMosaic::ImageToMosaic(const bpt::ptree& ini)
     : m_guideLines(ini),
       m_topologicalMapMaker(ini),
       m_topologicalToLocations(ini),
-      m_iterativePlacer(ini),
       m_povRayRenderer(ini),
 #ifdef USE_OSG
       m_polygonsToScene(ini),
@@ -162,11 +161,6 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
    {
       iter->color = input(iter->center);
       iter->orientation = atan2(dy(iter->center), dx(iter->center));
-   }
-
-   if (false /*m_iterativeTiling*/)
-   {
-      m_iterativePlacer.Process(m_tsize, currentPolygons);
    }
 
    if (m_maskTileLocationsWithMotion && !motionMask.empty())

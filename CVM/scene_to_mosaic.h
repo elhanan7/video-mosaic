@@ -27,7 +27,6 @@ class SceneManager
 
    friend class SceneToMosaic;
  private:
-    typedef std::vector<cv::Rect> Motion;
    struct ImageData
    {
       cv::Mat image;

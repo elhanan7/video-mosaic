@@ -31,3 +31,5 @@ ADD_LIBRARY(CVM
   ${CVM_HDRS}
   ${CVM_SRCS}
   )
+
+target_link_libraries(CVM Motion)

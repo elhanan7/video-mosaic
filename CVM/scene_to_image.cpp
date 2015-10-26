@@ -2,7 +2,7 @@
 
 #ifdef USE_OSG
 
-#include <Windows.h>
+//#include <Windows.h>
 #include "scene_to_image.h"
 #include <osgViewer/Viewer>
 #include <boost/property_tree/ptree.hpp>

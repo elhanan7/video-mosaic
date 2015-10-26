@@ -8,7 +8,7 @@
 #include "guide_lines.h"
 #include "topological_map_maker.h"
 #include "topographic_to_locations.h"
-#include "topographic_to_locations_iterative.h"
+//#include "topographic_to_locations_iterative.h"
 #include "ideal_to_cut_polygons.h"
 #include "pov_ray_renderer.h"
 #include "polygons_to_scene.h"
@@ -44,7 +44,7 @@ class ImageToMosaic
    GuideLines m_guideLines;
    TopologicalMapMaker m_topologicalMapMaker;
    TopographicToLocations m_topologicalToLocations;
-   TopographicToLocationsIterative m_iterativePlacer;
+   //TopographicToLocationsIterative m_iterativePlacer;
    PovRayRenderer m_povRayRenderer;
 #ifdef USE_OSG
    PolygonsToScene m_polygonsToScene;

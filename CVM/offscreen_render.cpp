@@ -2,7 +2,7 @@
 
 #ifdef USE_OSG
 
-#include <Windows.h>
+//#include <Windows.h>
 #include <osg/Camera>
 #include <osg/CameraNode>
 #include <osgViewer/Viewer>
