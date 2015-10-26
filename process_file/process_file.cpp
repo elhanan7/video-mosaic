@@ -29,10 +29,12 @@ int main(int argc, char** argv)
    std::cout << inName << std::endl;
    std::string outName = "vm_" + inName;
    std::string glName = "gl_" + inName;
+   std::string topoName = "topo_" + inName;
    if (args.size() > 1)
    {
       outName = args[1];
       glName = "gl_" + args[1];
+      topoName = "topo_" + args[1];
    }
 
    itm.Process(frame, fcolor);
@@ -41,6 +43,10 @@ int main(int argc, char** argv)
    if (ini.get("ProcessFile.SaveGL", 0) == 1)
    {
       cv::imwrite(glName, itm.GetGuideLinesImage());
+   }
+   if (ini.get("ProcessFile.SaveTopological", 0) == 1)
+   {
+      cv::imwrite(topoName, itm.GetTopologicalImage());
    }
 
    return 0;

@@ -6,7 +6,12 @@
 
 namespace videoMosaic
 {
-SceneToMosaic::SceneToMosaic(const boost::property_tree::ptree& ini) : m_motion(ini), m_itm(ini) {}
+SceneToMosaic::SceneToMosaic(const boost::property_tree::ptree& ini) : m_motion(ini), m_itm(ini), m_currentIdx(0)
+{
+   m_followMotionStrictly = ini.get("VideoToMosaic.FollowMotionStrictly", true);
+	m_motionExpansionFactor = ini.get("VideoToMosaic.MotionExpansionFactor", 1.5);
+   m_calculateGlobalMotion = ini.get("SceneToMosaic.CalculateGlobalMotion", true);
+}
 
 namespace
 {
@@ -65,7 +70,7 @@ namespace
       return res;
    }
 }
-cv::Mat SceneToMosaic::GetMosaic()
+void SceneToMosaic::ProcessAll()
 {
    /*
       Outline:
@@ -124,6 +129,7 @@ cv::Mat SceneToMosaic::GetMosaic()
       cv::Size frameSz(imageData.image.cols, imageData.image.rows);
       CalculateValidMask(invTrans, frameSz, sz, warpMask);
       cv::Mat motionMask = GetWarpedMotionMask(imageData.motion, invTrans, frameSz, sz);
+      if (size_t(idx) == m_manager.m_data.size() - 1) motionMask.setTo(0);
       for (int row = 0; row < sz.height; ++row)
       {
          for (int col = 0; col < sz.width; ++col)
@@ -136,7 +142,8 @@ cv::Mat SceneToMosaic::GetMosaic()
             }
          }
       }
-      std::cout << "WARP " << ++idx << std::endl;
+      ++idx;
+      std::cout << "WARP " << idx << std::endl;
    }
 
    idx = 0;
@@ -154,8 +161,11 @@ cv::Mat SceneToMosaic::GetMosaic()
       }
    cv::imwrite("pano_orig.png", medianImage);
    m_itm.Process(medianImage, res);
-   return res;
-
+   m_pano = res;
+   m_panoGuideLines = m_itm.GetGuideLinesImage().clone();
+   m_panoTileMask = m_itm.GetTileMask().clone();
+   m_itm.GetPolygons(m_panoPolygons);
+   m_currentIdx = 0;
 }
 
 bool SceneToMosaic::ProcessNext(cv::Mat frame)
@@ -164,15 +174,107 @@ bool SceneToMosaic::ProcessNext(cv::Mat frame)
    m_manager.SetImage(id, frame);
    cv::Mat gray;
    cv::cvtColor(frame, gray, cv::COLOR_RGB2GRAY);
-   m_motion.Give(gray, true); // Maybe convert to gray?
+   m_motion.Give(gray, m_calculateGlobalMotion); // Maybe convert to gray?
    cv::Mat trans;
    bool res = m_motion.TakeGlobalTrans(trans);
    assert(id == 0 || res);
    m_manager.SetTransformation(id, trans);
    SceneManager::Motion motion;
    m_motion.TakeSegmentation(motion);
+   m_manager.SetMHI(id, m_motion.Take());
+   m_manager.SetTimeStamp(id, m_motion.TakeTimeStamp());
    m_manager.SetMotion(id, motion);
    return true;
+}
+
+namespace
+{
+cv::Mat GetSubImage(cv::Mat src, cv::Mat trans, cv::Size dstSize)
+{
+   cv::Mat dst;
+   cv::warpPerspective(src, dst, trans, dstSize, cv::INTER_CUBIC);
+   return dst;
+}
+
+void SelectPolygons(const PolygonList& allPolygons, cv::Mat trans, cv::Size dstSize,
+                    PolygonList& polygons)
+{
+   auto IsCenterInsideImage = [&](const Polygon& poly) -> bool
+   {
+      std::vector<cv::Point2d> pts, transformed;
+      pts.push_back(poly.center);
+      cv::perspectiveTransform(pts, transformed, trans);
+      cv::Point2d res = transformed[0];
+      int ix, iy;
+      ix = std::round(res.x);
+      iy = std::round(res.y);
+      bool outside = (ix < 0 || ix >= dstSize.width || iy < 0 || iy >= dstSize.height);
+      return !outside;
+   };
+
+   std::copy_if(allPolygons.cbegin(), allPolygons.cend(), std::back_inserter(polygons),
+                IsCenterInsideImage);
+
+   auto TransformOnePolygon = [&](Polygon& poly)
+   {
+      std::vector<cv::Point2d> centerVec, transformed, transformedCenter;
+      centerVec.push_back(poly.center);
+      cv::perspectiveTransform(centerVec, transformedCenter, trans);
+      cv::perspectiveTransform(poly.vertices, transformed, trans);
+      poly.vertices.swap(transformed);
+      poly.center = transformedCenter[0];
+   };
+
+   std::for_each(polygons.begin(), polygons.end(), TransformOnePolygon);
+}
+
+}
+
+cv::Mat SceneToMosaic::CreateMotionMask(SceneManager::Motion& motion, cv::Mat mhi, double timeStamp,
+                                        cv::Size dstSize)
+{
+   cv::Mat_<unsigned char> motionMask = cv::Mat::zeros(dstSize, CV_8U);
+   for (const auto& rect : motion)
+   {
+      cv::Size axes(m_motionExpansionFactor * rect.width, m_motionExpansionFactor * rect.height);
+      cv::Point center(rect.x + 0.5 * rect.width, rect.y + 0.5 * rect.height);
+      if (m_followMotionStrictly)
+      {
+         cv::Mat mhiROI, motionMaskROI;
+         mhiROI = mhi(rect);
+         motionMaskROI = motionMask(rect);
+         cv::Mat currentMotion, currentMotionUC;
+         cv::threshold(mhiROI, currentMotion, timeStamp - 10, 1, cv::THRESH_BINARY);
+         currentMotion.convertTo(currentMotionUC, CV_8U);
+         cv::dilate(currentMotionUC, currentMotionUC,
+                    cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(10, 10)));
+         currentMotionUC.copyTo(motionMaskROI);
+      }
+      else
+      {
+         cv::ellipse(motionMask, center, axes, 0, 0, 360, cv::Scalar(1), -1);
+      }
+   }
+   return motionMask;
+}
+
+cv::Mat SceneToMosaic::RecieveNext()
+{
+   SceneManager::ImageData& imgData = m_manager.m_data[m_currentIdx++];
+   cv::Size dstSize(imgData.image.cols, imgData.image.rows);
+   cv::Mat motionMask = CreateMotionMask(imgData.motion, imgData.mhi, imgData.timeStamp, dstSize);
+   cv::Mat guidelines = GetSubImage(m_panoGuideLines, imgData.pixelToPanoramaTrans, dstSize);
+   cv::Mat tileMask = GetSubImage(m_panoTileMask, imgData.pixelToPanoramaTrans, dstSize);
+   PolygonList polygons;
+   SelectPolygons(m_panoPolygons, imgData.pixelToPanoramaTrans, dstSize, polygons);
+   cv::Mat_<RGBT> res;
+   m_itm.Process(imgData.image, res, guidelines, tileMask, polygons, motionMask);
+   return res;
+}
+
+bool SceneToMosaic::HasNext()
+{
+   return m_currentIdx < m_manager.m_data.size();
 }
 
 SceneManager::SceneManager() {}
@@ -187,6 +289,8 @@ int SceneManager::NextID()
 }
 
 void SceneManager::SetImage(int id, cv::Mat img) { m_data[id].image = img; }
+void SceneManager::SetMHI(int id, cv::Mat img) { m_data[id].mhi = img; }
+void SceneManager::SetTimeStamp(int id, double ts) { m_data[id].timeStamp = ts; }
 void SceneManager::SetMotion(int id, const std::vector<cv::Rect>& motion)
 {
    m_data[id].motion = motion;

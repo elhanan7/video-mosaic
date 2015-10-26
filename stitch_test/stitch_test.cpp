@@ -25,6 +25,7 @@ int main(int argc, char** argv)
 	for (int i = 0; i < skip; ++i) ds.Next();
 	
 	videoMosaic::SceneToMosaic stm(ini);
+   std::vector<std::string> imgNames;
    int idx{0};
    while (ds.HasNext())
 	{
@@ -33,13 +34,15 @@ int main(int argc, char** argv)
 		stm.ProcessNext(frame);
       std::string inName = boost::filesystem::path(ds.GetName()).filename().string();
 		std::cout << inName << std::endl;
+      imgNames.push_back(inName);
       if (idx > length - 1) break;
 	}
-   cv::Mat pano = stm.GetMosaic();
-   cv::namedWindow("blah", cv::WINDOW_NORMAL);
-   cv::imshow("blah", pano);
-   cv::waitKey();
-   //stitcher.stitch(images, pano);
-   cv::imwrite("pano.png", pano);
+   stm.ProcessAll();
+   for (const auto& imgName: imgNames)
+   {
+      cv::Mat res = stm.RecieveNext();
+      cv::imwrite("vm_" + imgName, res);
+      std::cout << "Wrote " << "vm_" + imgName << std::endl;
+   }
     return 0;
 }

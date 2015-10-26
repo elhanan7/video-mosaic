@@ -9,6 +9,14 @@
 namespace bpt = boost::property_tree;
 using namespace cv;
 
+namespace
+{
+bool PointInImage(cv::Point2d pt, cv::Mat img)
+{
+   return pt.x >= 0 && pt.x < img.cols && pt.y >= 0 && pt.y < img.rows;
+}
+}
+
 namespace videoMosaic
 {
 
@@ -64,7 +72,7 @@ void FixTileMask(const PolygonList& oldPolys, const cv::Mat_<unsigned char> moti
 {
    for (auto iter = oldPolys.cbegin(); iter != oldPolys.cend(); ++iter)
    {
-      if (motionMask(iter->center))
+      if (PointInImage(iter->center, motionMask) && motionMask(iter->center))
       {
          std::vector<cv::Point> intPoly;
          std::transform(iter->vertices.cbegin(), iter->vertices.cend(), std::back_inserter(intPoly),
@@ -144,6 +152,7 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
    m_lastGL = edges.clone();
    cv::Mat_<float> dx, dy, dist;
    m_topologicalMapMaker.Process(edges, edges, m_tsize, dist, dx, dy);
+   edges.copyTo(m_lastTopoImage);
    PolygonList currentPolygons, polygons;
    if (m_maskTileLocationsWithMotion && !motionMask.empty())
    {
@@ -239,4 +248,17 @@ void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b
 }
 
 cv::Mat ImageToMosaic::GetGuideLinesImage() { return m_lastGL; }
+cv::Mat ImageToMosaic::GetTopologicalImage() { return m_lastTopoImage; }  
+cv::Mat ImageToMosaic::GetTileMask() { return m_lastTileMask; }
+void ImageToMosaic::GetPolygons(PolygonList& polygons) { polygons = m_lastPolygons; }
+
+void ImageToMosaic::Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b>& output,
+                            cv::Mat gl, cv::Mat tileMask, const PolygonList& polygons,
+                            cv::Mat motionMask)
+{
+   m_lastGL = gl;
+   m_lastTileMask = tileMask;
+   m_lastPolygons = polygons;
+   Process(input, output, motionMask);
+}
 }

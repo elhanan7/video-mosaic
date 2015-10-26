@@ -47,6 +47,7 @@ private:
 	CircularBuffer m_buffer;
 	unsigned int m_currentFrame;
 	unsigned int m_minimalComponentDimension;
+   bool m_newPixelsAreMotion;
 };
 
 
@@ -56,6 +57,7 @@ VideoToMHIImpl::VideoToMHIImpl(const bpt::ptree& ini) : m_motionEstimator(ini)
 	m_threshold =     ini.get("VideoToMHI.MotionThreshold", 50);
 	m_frameRate =     ini.get("VideoToMHI.FrameRate", 10);
 	m_minimalComponentDimension = ini.get("VideoToMHI.MinimalComponentDimension", 25);
+   m_newPixelsAreMotion = ini.get("VideoToMHI.NewPixelsAreMotion", true);
 	m_currentFrame = 0;
 	m_buffer = CircularBuffer(m_bufferLength);
 	m_transValid = false;
@@ -102,9 +104,9 @@ void VideoToMHIImpl::Give(const cv::Mat input, bool globalMotion)
 	e.convertTo(ef, ef.type());
 	cv::absdiff(ef, bf, diff);
 	cv::threshold(diff, diff, m_threshold, 1,CV_THRESH_BINARY);
-	if (globalMotion)
+	if (globalMotion && m_newPixelsAreMotion)
 	{
-		diff.setTo(1, warpMask);
+		diff.setTo(0, warpMask);
 	}
 	diff.convertTo(warpMask, warpMask.type());
 	cv::updateMotionHistory(warpMask, m_mhi,m_currentFrame, m_frameRate);

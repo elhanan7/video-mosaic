@@ -8,7 +8,6 @@
 #include "guide_lines.h"
 #include "topological_map_maker.h"
 #include "topographic_to_locations.h"
-//#include "topographic_to_locations_iterative.h"
 #include "ideal_to_cut_polygons.h"
 #include "pov_ray_renderer.h"
 #include "polygons_to_scene.h"
@@ -25,9 +24,15 @@ class ImageToMosaic
    ImageToMosaic(const boost::property_tree::ptree& ini);
    void Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b>& output,
                 cv::Mat motionMask = cv::Mat());
+   void Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b>& output,
+                cv::Mat gl, cv::Mat tileMask, const PolygonList& polygons,
+                cv::Mat motionMask = cv::Mat());
    void Process(const cv::Mat_<cv::Vec3b>& input, cv::Mat_<cv::Vec3b>& output, cv::Mat motionMask,
                 const cv::Mat& motionTrans);
    cv::Mat GetGuideLinesImage();
+   cv::Mat GetTopologicalImage();
+   cv::Mat GetTileMask();
+   void GetPolygons(PolygonList& polygons);
 
  private:
    enum RenderImpl
@@ -44,7 +49,6 @@ class ImageToMosaic
    GuideLines m_guideLines;
    TopologicalMapMaker m_topologicalMapMaker;
    TopographicToLocations m_topologicalToLocations;
-   //TopographicToLocationsIterative m_iterativePlacer;
    PovRayRenderer m_povRayRenderer;
 #ifdef USE_OSG
    PolygonsToScene m_polygonsToScene;
@@ -55,6 +59,7 @@ class ImageToMosaic
    PolygonList m_lastPolygons;
    cv::Mat_<unsigned char> m_lastGL;
    cv::Mat_<unsigned char> m_lastTileMask;
+   cv::Mat m_lastTopoImage;
    bool m_maskTileLocationsWithMotion;
    bool m_maskGuideLinesWithMotion;
    bool m_recolorize;
