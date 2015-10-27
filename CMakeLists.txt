@@ -33,6 +33,6 @@ ADD_SUBDIRECTORY(Motion)
 ADD_SUBDIRECTORY(CVM)
 ADD_SUBDIRECTORY(process_file)
 ADD_SUBDIRECTORY(process_directory)
-ADD_SUBDIRECTORY(stitch_test)
+ADD_SUBDIRECTORY(process_scene)
 ADD_SUBDIRECTORY(python_video_mosaic)
 
