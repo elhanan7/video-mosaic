@@ -258,7 +258,7 @@ cv::Mat SceneToMosaic::CreateMotionMask(SceneManager::Motion& motion, cv::Mat mh
    return motionMask;
 }
 
-cv::Mat SceneToMosaic::RecieveNext()
+cv::Mat SceneToMosaic::ReceiveNext()
 {
    SceneManager::ImageData& imgData = m_manager.m_data[m_currentIdx++];
    cv::Size dstSize(imgData.image.cols, imgData.image.rows);

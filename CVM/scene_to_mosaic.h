@@ -29,7 +29,6 @@ class SceneManager
 
    friend class SceneToMosaic;
  private:
-   typedef std::vector<cv::Rect> Motion;
    struct ImageData
    {
       cv::Mat image;
@@ -51,7 +50,7 @@ class SceneToMosaic
    bool ProcessNext(cv::Mat frame);
    void ProcessAll();
    bool HasNext();
-   cv::Mat RecieveNext();
+   cv::Mat ReceiveNext();
 
  private:
    cv::Mat CreateMotionMask(SceneManager::Motion& motion, cv::Mat mhi, double timeStamp,

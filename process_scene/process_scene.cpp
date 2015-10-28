@@ -40,7 +40,7 @@ int main(int argc, char** argv)
    stm.ProcessAll();
    for (const auto& imgName: imgNames)
    {
-      cv::Mat res = stm.RecieveNext();
+      cv::Mat res = stm.ReceiveNext();
       cv::imwrite("vm_" + imgName, res);
       std::cout << "Wrote " << "vm_" + imgName << std::endl;
    }
